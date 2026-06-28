@@ -4,7 +4,7 @@ import { LeafIcon, ArrowRightIcon } from "./icons";
 import { useStore } from "./store";
 
 export function Newsletter() {
-  const { t } = useStore();
+  const { t, toast } = useStore();
   return (
     <div className="overflow-hidden rounded-[2rem] border border-line bg-amber-bg px-6 py-12 text-center sm:px-10 lg:py-16">
       <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gold text-cream">
@@ -17,7 +17,11 @@ export function Newsletter() {
         {t("newsSub")}
       </p>
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.currentTarget.reset();
+          toast(t("newsThanks"));
+        }}
         className="mx-auto mt-6 flex max-w-md flex-col gap-2.5 sm:flex-row"
       >
         <input

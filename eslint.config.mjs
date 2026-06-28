@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Dış kaynaklı (vendored) tasarım denetim araçları — projeye ait değil.
+    "skills/**",
   ]),
 ]);
 

@@ -141,6 +141,10 @@ export const tr: Dict = {
   coldChain: "Soğuk Zincir",
   searchNoResult: "için sonuç bulunamadı.",
   searchAllResults: "için tüm sonuçlar",
+  toastAdded: "sepete eklendi",
+  toastFavAdded: "Favorilere eklendi",
+  toastFavRemoved: "Favorilerden çıkarıldı",
+  newsThanks: "Teşekkürler! Bültenimize abone oldunuz.",
 };
 
 export const ku: Dict = {
@@ -278,6 +282,10 @@ export const ku: Dict = {
   coldChain: "Zincîra Sar",
   searchNoResult: "bo wê encam nehat dîtin.",
   searchAllResults: "bo wê hemû encam",
+  toastAdded: "li sepetê hat zêdekirin",
+  toastFavAdded: "Li bijarteyan hat zêdekirin",
+  toastFavRemoved: "Ji bijarteyan hat derxistin",
+  newsThanks: "Spas! Hûn abonetiya bultena me bûn.",
 };
 
 export const dicts: Record<Lang, Dict> = { tr, ku };

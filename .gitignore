@@ -42,3 +42,6 @@ next-env.d.ts
 
 # embedded reference skill repos (not part of the app)
 /skills/external/
+
+# Serena MCP tooling (vendored, not project code)
+.serena/

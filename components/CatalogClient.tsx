@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { products, categories, getCategory } from "@/lib/data";
 import { catNameKey, catDescKey, badgeKey } from "@/lib/i18n";
@@ -34,6 +34,17 @@ export function CatalogClient() {
   const [q, setQ] = useState(initialAra);
   const [sort, setSort] = useState<Sort>("onerilen");
   const [badge, setBadge] = useState<string | null>(null);
+
+  // URL parametreleri değişince (ör. başlıktaki kategori linkine tıklama,
+  // bu sayfadayken) filtreleri senkronize et — aksi halde useState ilk
+  // değeri sabit kalır ve liste güncellenmez.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const c = sp.get("kategori");
+    setCat(c && getCategory(c) ? c : null);
+    setQ(sp.get("ara") ?? "");
+  }, [sp]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const list = useMemo(() => {
     const nq = norm(q);

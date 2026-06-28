@@ -17,16 +17,17 @@ export function TrackingMap({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const node = ref.current;
     let map: import("leaflet").Map | null = null;
     let raf = 0;
     let cancelled = false;
 
     (async () => {
       const L = (await import("leaflet")).default;
-      if (cancelled || !ref.current || ref.current.dataset.init) return;
-      ref.current.dataset.init = "1";
+      if (cancelled || !node || node.dataset.init) return;
+      node.dataset.init = "1";
 
-      map = L.map(ref.current, {
+      map = L.map(node, {
         scrollWheelZoom: false,
         zoomControl: true,
         attributionControl: true,
@@ -106,7 +107,7 @@ export function TrackingMap({
       cancelled = true;
       if (raf) clearTimeout(raf);
       if (map) map.remove();
-      if (ref.current) delete ref.current.dataset.init;
+      if (node) delete node.dataset.init;
     };
   }, [origin, destination, progress]);
 

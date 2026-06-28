@@ -33,7 +33,7 @@ export function AddToCart({ slug, name }: { slug: string; name: string }) {
       <button
         onClick={() => {
           add(slug, qty);
-          toast(`${name} sepete eklendi`);
+          toast(`${name} ${t("toastAdded")}`);
           setCartOpen(true);
         }}
         className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep"
@@ -45,7 +45,7 @@ export function AddToCart({ slug, name }: { slug: string; name: string }) {
       <button
         onClick={() => {
           toggleFav(slug);
-          toast(fav ? "Favorilerden çıkarıldı" : "Favorilere eklendi");
+          toast(fav ? t("toastFavRemoved") : t("toastFavAdded"));
         }}
         aria-label="Favorilere ekle"
         aria-pressed={fav}

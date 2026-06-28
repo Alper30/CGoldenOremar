@@ -19,7 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
     e.preventDefault();
     e.stopPropagation();
     add(product.slug, 1);
-    toast(`${product.name} sepete eklendi`);
+    toast(`${product.name} ${t("toastAdded")}`);
     setCartOpen(true);
   };
 
@@ -27,7 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
     e.preventDefault();
     e.stopPropagation();
     toggleFav(product.slug);
-    toast(fav ? "Favorilerden çıkarıldı" : "Favorilere eklendi");
+    toast(fav ? t("toastFavRemoved") : t("toastFavAdded"));
   };
 
   return (

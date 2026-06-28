@@ -53,7 +53,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
   const [lang, setLangState] = useState<Lang>("tr");
 
-  // localStorage'dan yükle
+  // localStorage'dan yükle. Not: setState burada bilinçli — SSR'da localStorage
+  // olmadığı için ilk render boş başlar, hidrasyon sonrası senkronlanır (mismatch önlenir).
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       setCart(JSON.parse(localStorage.getItem("go_cart") || "[]"));
@@ -65,6 +67,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     setHydrated(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);

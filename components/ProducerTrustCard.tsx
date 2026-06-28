@@ -48,7 +48,7 @@ export function ProducerTrustCard({ producer }: { producer: Producer }) {
       {producer.verified ? (
         <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-success/10 px-3 py-1 text-xs font-semibold text-success">
           <VerifiedIcon className="h-3.5 w-3.5" />
-          Kimliği doğrulanmış üretici · {producer.memberSince}'ten beri
+          Kimliği doğrulanmış üretici · {producer.memberSince}&apos;ten beri
         </p>
       ) : (
         <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
