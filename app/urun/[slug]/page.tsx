@@ -1,13 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  getProduct,
-  getProducer,
-  getCategory,
-  productsByProducer,
-  products,
-  fmtPrice,
-} from "@/lib/data";
+import { fmtPrice } from "@/lib/data";
+import { fetchCatalogData, buildHelpers } from "@/lib/queries";
 import { StarRating } from "@/components/StarRating";
 import { ProducerTrustCard } from "@/components/ProducerTrustCard";
 import { ReviewList } from "@/components/ReviewList";
@@ -16,7 +10,8 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { AddToCart } from "@/components/AddToCart";
 import { ArrowRightIcon, SnowIcon, ShieldIcon, TruckIcon } from "@/components/icons";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { products } = await fetchCatalogData();
   return products.map((p) => ({ slug: p.slug }));
 }
 
@@ -26,6 +21,9 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const data = await fetchCatalogData();
+  const { getProduct, getProducer, getCategory, productsByProducer } =
+    buildHelpers(data);
   const product = getProduct(slug);
   if (!product) notFound();
 

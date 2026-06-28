@@ -3,11 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useStore } from "./store";
-import { getProduct, fmtPrice } from "@/lib/data";
+import { useCatalog } from "./CatalogProvider";
+import { fmtPrice } from "@/lib/data";
 import { XIcon, PlusIcon, MinusIcon, TrashIcon, CartIcon, ArrowRightIcon } from "./icons";
 
 export function CartDrawer() {
   const { cart, cartOpen, setCartOpen, setQty, remove, clearCart, toast, t } = useStore();
+  const { getProduct } = useCatalog();
 
   const lines = cart
     .map((i) => ({ ...i, product: getProduct(i.slug) }))

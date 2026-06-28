@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { categories } from "@/lib/data";
 import { catNameKey, type Lang } from "@/lib/i18n";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 import { SearchBox } from "./SearchBox";
 import {
   CartIcon,
@@ -18,6 +18,7 @@ import {
 export function Header() {
   const [open, setOpen] = useState(false);
   const { cartCount, favCount, hydrated, setCartOpen, lang, setLang, t } = useStore();
+  const { categories } = useCatalog();
 
   // Dönen duyuru/kampanya çubuğu
   const announcements = ["announcement", "announce2", "announce3", "announce4", "announce5"];

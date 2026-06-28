@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { producers } from "@/lib/data";
 import { StarRating } from "./StarRating";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 import { VerifiedIcon, PinIcon, ArrowRightIcon } from "./icons";
 
 export function FeaturedProducers() {
   const { t } = useStore();
+  const { producers } = useCatalog();
   const list = producers.slice(0, 3);
   return (
     <div className="grid gap-5 md:grid-cols-3">

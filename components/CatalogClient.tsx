@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { products, categories, getCategory } from "@/lib/data";
 import { catNameKey, catDescKey, badgeKey } from "@/lib/i18n";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 import { ProductCard } from "./ProductCard";
 import { SearchIcon } from "./icons";
 
@@ -25,6 +25,7 @@ const badges = ["Organik", "Katkısız", "Doğal", "Şeker İlavesiz"];
 export function CatalogClient() {
   const sp = useSearchParams();
   const { t } = useStore();
+  const { products, categories, getCategory } = useCatalog();
   const initialCat = sp.get("kategori");
   const initialAra = sp.get("ara") ?? "";
 
@@ -61,7 +62,7 @@ export function CatalogClient() {
     else if (sort === "fiyat-azalan") r = [...r].sort((a, b) => b.price - a.price);
     else if (sort === "puan") r = [...r].sort((a, b) => b.rating - a.rating);
     return r;
-  }, [cat, q, sort, badge]);
+  }, [products, cat, q, sort, badge]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
