@@ -44,7 +44,7 @@ export function CatalogClient() {
     const c = sp.get("kategori");
     setCat(c && getCategory(c) ? c : null);
     setQ(sp.get("ara") ?? "");
-  }, [sp]);
+  }, [sp, getCategory]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const list = useMemo(() => {
