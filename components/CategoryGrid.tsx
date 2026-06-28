@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { categories } from "@/lib/data";
 import { catNameKey } from "@/lib/i18n";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 
 export function CategoryGrid() {
   const { t } = useStore();
+  const { categories } = useCatalog();
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
       {categories.map((c) => (

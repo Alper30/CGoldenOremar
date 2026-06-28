@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useStore } from "@/components/store";
-import { getProduct } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
 import { ProductCard } from "@/components/ProductCard";
 import { HeartIcon, ArrowRightIcon } from "@/components/icons";
 
 export default function FavoritesPage() {
   const { favs, hydrated, t } = useStore();
+  const { getProduct } = useCatalog();
   const items = favs.map((s) => getProduct(s)).filter(Boolean);
 
   return (

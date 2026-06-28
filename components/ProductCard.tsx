@@ -3,13 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { getProducer, fmtPrice } from "@/lib/data";
+import { fmtPrice } from "@/lib/data";
 import { badgeKey } from "@/lib/i18n";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 import { StarRating } from "./StarRating";
 import { HeartIcon, CartIcon, PersonIcon, PinIcon, SnowIcon } from "./icons";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { getProducer } = useCatalog();
   const producer = getProducer(product.producer);
   const { add, setCartOpen, toggleFav, isFav, toast, t } = useStore();
   const fav = isFav(product.slug);

@@ -1,17 +1,14 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import {
-  getProducer,
-  productsByProducer,
-  producers,
-} from "@/lib/data";
+import { fetchCatalogData, buildHelpers } from "@/lib/queries";
 import { ProductCard } from "@/components/ProductCard";
 import { ReviewList } from "@/components/ReviewList";
 import { StarRating } from "@/components/StarRating";
 import { VerifiedIcon, PinIcon } from "@/components/icons";
 import type { Review } from "@/lib/types";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { producers } = await fetchCatalogData();
   return producers.map((p) => ({ slug: p.slug }));
 }
 
@@ -30,6 +27,8 @@ export default async function ProducerPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const data = await fetchCatalogData();
+  const { getProducer, productsByProducer } = buildHelpers(data);
   const producer = getProducer(slug);
   if (!producer) notFound();
 

@@ -9,7 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { FeaturedProducers } from "@/components/FeaturedProducers";
 import { Newsletter } from "@/components/Newsletter";
 import { StarRating } from "@/components/StarRating";
-import { featuredProducts, reviews } from "@/lib/data";
+import { useCatalog } from "@/components/CatalogProvider";
 import { useStore } from "@/components/store";
 import { ArrowRightIcon } from "@/components/icons";
 
@@ -52,6 +52,7 @@ function SectionHead({
 
 export default function HomePage() {
   const { t } = useStore();
+  const { featuredProducts, reviews } = useCatalog();
   const featured = featuredProducts();
 
   return (

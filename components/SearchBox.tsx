@@ -3,8 +3,9 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { products, fmtPrice } from "@/lib/data";
+import { fmtPrice } from "@/lib/data";
 import { useStore } from "./store";
+import { useCatalog } from "./CatalogProvider";
 import { SearchIcon } from "./icons";
 
 const norm = (s: string) =>
@@ -21,6 +22,7 @@ export function SearchBox({
 }) {
   const router = useRouter();
   const { t } = useStore();
+  const { products } = useCatalog();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
