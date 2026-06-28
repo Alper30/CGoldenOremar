@@ -5,13 +5,14 @@ import { useEffect, useState } from "react";
 import { catNameKey, type Lang } from "@/lib/i18n";
 import { useStore } from "./store";
 import { useCatalog } from "./CatalogProvider";
+import { useAuth } from "./AuthProvider";
+import { AccountMenu } from "./AccountMenu";
 import { SearchBox } from "./SearchBox";
+import { logoutAction } from "@/app/giris/actions";
 import {
   CartIcon,
   HeartIcon,
   MenuIcon,
-  PersonIcon,
-  BagPlusIcon,
   TruckIcon,
 } from "./icons";
 
@@ -19,6 +20,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const { cartCount, favCount, hydrated, setCartOpen, lang, setLang, t } = useStore();
   const { categories } = useCatalog();
+  const { signedIn } = useAuth();
 
   // Dönen duyuru/kampanya çubuğu
   const announcements = ["announcement", "announce2", "announce3", "announce4", "announce5"];
@@ -110,14 +112,7 @@ export function Header() {
               {badge(cartCount, "bg-red-600")}
             </button>
 
-            <button className="ml-1 hidden items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold text-forest transition-colors hover:bg-canvas lg:flex">
-              <PersonIcon className="h-4 w-4" />
-              {t("navLogin")}
-            </button>
-            <button className="ml-1 hidden items-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep sm:flex">
-              <BagPlusIcon className="h-4 w-4" />
-              {t("navSell")}
-            </button>
+            <AccountMenu />
           </div>
         </div>
       </div>
@@ -218,6 +213,29 @@ export function Header() {
           <Link href="/randevu" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-gold-deep">
             {t("navBooking")}
           </Link>
+
+          <div className="mt-2 border-t border-line pt-2" />
+          {signedIn ? (
+            <>
+              <Link href="/hesabim" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
+                {t("navAccount")}
+              </Link>
+              <form action={logoutAction}>
+                <button type="submit" className="block w-full py-2.5 text-left text-sm font-semibold text-red-600">
+                  {t("navLogout")}
+                </button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/giris" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
+                {t("navLogin")}
+              </Link>
+              <Link href="/kayit" onClick={() => setOpen(false)} className="mt-1 flex items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-cream">
+                {t("navSell")}
+              </Link>
+            </>
+          )}
         </nav>
       )}
     </header>

@@ -6,9 +6,11 @@ import { Footer } from "@/components/Footer";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 import { StoreProvider } from "@/components/store";
 import { CatalogProvider } from "@/components/CatalogProvider";
+import { AuthProvider } from "@/components/AuthProvider";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Toaster } from "@/components/Toaster";
 import { fetchCatalogData } from "@/lib/queries";
+import { getAuthSnapshot } from "@/lib/auth";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -31,7 +33,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const catalog = await fetchCatalogData();
+  const [catalog, auth] = await Promise.all([
+    fetchCatalogData(),
+    getAuthSnapshot(),
+  ]);
   return (
     <html
       lang="tr"
@@ -39,14 +44,16 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-cream text-ink">
         <CatalogProvider data={catalog}>
-          <StoreProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <Toaster />
-            <WhatsAppWidget />
-          </StoreProvider>
+          <AuthProvider initial={auth}>
+            <StoreProvider>
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <CartDrawer />
+              <Toaster />
+              <WhatsAppWidget />
+            </StoreProvider>
+          </AuthProvider>
         </CatalogProvider>
       </body>
     </html>
