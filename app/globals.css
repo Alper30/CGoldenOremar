@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/*
+  Golden Oremar — Tasarım Sistemi (DEMO)
+  Atmosfer: doğal-sıcak + sakin lüks · "köy kalitesi"
+  Palet: krem zemin, zeytin/orman yeşili, sıcak altın vurgu.
+*/
+
+@theme {
+  /* Renkler */
+  --color-cream: #faf7f0; /* ana zemin */
+  --color-canvas: #f2ecdf; /* bölüm zemini */
+  --color-card: #fffdf8; /* kart yüzeyi */
+  --color-forest: #2e3a2b; /* birincil koyu */
+  --color-forest-deep: #1f271c;
+  --color-gold: #a8781f; /* birincil CTA (v0 sıcak altın) */
+  --color-gold-deep: #8a6114; /* CTA hover */
+  --color-gold-soft: #d8b25e;
+  --color-amber-bg: #f4e8cd; /* duyuru çubuğu / ikon kutusu */
+  --color-ink: #1e1b16; /* metin */
+  --color-muted: #6f6757; /* ikincil metin */
+  --color-line: #e6decf; /* ince çizgi */
+  --color-success: #3f6b43;
+
+  /* Tipografi */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-hanken);
+
+  /* Yumuşatma */
+  --radius-card: 1rem;
+}
+
+:root {
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
+}
+
+@layer base {
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-forest-deep);
+  }
+
+  ::selection {
+    background: var(--color-gold-soft);
+    color: var(--color-forest-deep);
+  }
+}
+
+/* Yardımcı: ince üst-çizgi ayraç */
+.hairline {
+  border-color: var(--color-line);
+}
+
+/* Harita kargo işaretçisi (canlı) */
+.go-courier {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  background: var(--color-gold);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(20, 14, 2, 0.4);
+  border: 2px solid #fff;
+}
+.go-courier::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-gold);
+  opacity: 0.6;
+  animation: go-pulse 1.6s ease-out infinite;
+}
+@keyframes go-pulse {
+  from { transform: scale(0.7); opacity: 0.6; }
+  to { transform: scale(1.6); opacity: 0; }
+}
+.go-pin {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 6px rgba(20, 14, 2, 0.35);
+}
+/* Leaflet tile zemini krem ile uyum */
+.leaflet-container {
+  background: var(--color-canvas);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Yumuşak görünme animasyonu (abartısız) */
+@keyframes oremar-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: oremar-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
