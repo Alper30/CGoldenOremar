@@ -47,6 +47,268 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total: number
+          name: string
+          order_id: string
+          order_vendor_id: string
+          product_id: string
+          qty: number
+          unit_price: number
+          vendor_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total: number
+          name: string
+          order_id: string
+          order_vendor_id: string
+          product_id: string
+          qty: number
+          unit_price: number
+          vendor_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total?: number
+          name?: string
+          order_id?: string
+          order_vendor_id?: string
+          product_id?: string
+          qty?: number
+          unit_price?: number
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_vendor_id_fkey"
+            columns: ["order_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "order_vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_vendors: {
+        Row: {
+          auto_confirm_at: string | null
+          commission_amount: number
+          commission_rate: number
+          confirmed_at: string | null
+          created_at: string
+          delivered_at: string | null
+          escrow_status: Database["public"]["Enums"]["escrow_status"]
+          id: string
+          items_subtotal: number
+          net_amount: number
+          order_id: string
+          shipped_at: string | null
+          shipping_fee: number
+          tracking_carrier: string | null
+          tracking_no: string | null
+          vendor_id: string
+        }
+        Insert: {
+          auto_confirm_at?: string | null
+          commission_amount: number
+          commission_rate: number
+          confirmed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          escrow_status?: Database["public"]["Enums"]["escrow_status"]
+          id?: string
+          items_subtotal: number
+          net_amount: number
+          order_id: string
+          shipped_at?: string | null
+          shipping_fee?: number
+          tracking_carrier?: string | null
+          tracking_no?: string | null
+          vendor_id: string
+        }
+        Update: {
+          auto_confirm_at?: string | null
+          commission_amount?: number
+          commission_rate?: number
+          confirmed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          escrow_status?: Database["public"]["Enums"]["escrow_status"]
+          id?: string
+          items_subtotal?: number
+          net_amount?: number
+          order_id?: string
+          shipped_at?: string | null
+          shipping_fee?: number
+          tracking_carrier?: string | null
+          tracking_no?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_vendors_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_vendors_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          grand_total: number
+          id: string
+          items_total: number
+          payment_provider:
+            | Database["public"]["Enums"]["payment_provider"]
+            | null
+          payment_ref: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          ship_district: string | null
+          ship_line: string | null
+          ship_name: string | null
+          ship_phone: string | null
+          ship_province: string | null
+          shipping_total: number
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          grand_total?: number
+          id?: string
+          items_total?: number
+          payment_provider?:
+            | Database["public"]["Enums"]["payment_provider"]
+            | null
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          ship_district?: string | null
+          ship_line?: string | null
+          ship_name?: string | null
+          ship_phone?: string | null
+          ship_province?: string | null
+          shipping_total?: number
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          grand_total?: number
+          id?: string
+          items_total?: number
+          payment_provider?:
+            | Database["public"]["Enums"]["payment_provider"]
+            | null
+          payment_ref?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          ship_district?: string | null
+          ship_line?: string | null
+          ship_name?: string | null
+          ship_phone?: string | null
+          ship_province?: string | null
+          shipping_total?: number
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: []
+      }
+      payouts: {
+        Row: {
+          amount: number
+          created_at: string
+          iban: string | null
+          id: string
+          processed_at: string | null
+          status: string
+          vendor_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          iban?: string | null
+          id?: string
+          processed_at?: string | null
+          status?: string
+          vendor_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          iban?: string | null
+          id?: string
+          processed_at?: string | null
+          status?: string
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payouts_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_settings: {
+        Row: {
+          commission_rate: number
+          escrow_auto_confirm_days: number
+          free_shipping_threshold: number
+          id: boolean
+          updated_at: string
+        }
+        Insert: {
+          commission_rate?: number
+          escrow_auto_confirm_days?: number
+          free_shipping_threshold?: number
+          id?: boolean
+          updated_at?: string
+        }
+        Update: {
+          commission_rate?: number
+          escrow_auto_confirm_days?: number
+          free_shipping_threshold?: number
+          id?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_reviews: {
         Row: {
           author: string
@@ -209,6 +471,66 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_applications: {
+        Row: {
+          created_at: string
+          district: string | null
+          document_url: string | null
+          iban: string
+          id: string
+          person: string
+          phone: string
+          province: string | null
+          reject_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          selfie_url: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          store_name: string
+          story: string | null
+          tc_no: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          district?: string | null
+          document_url?: string | null
+          iban: string
+          id?: string
+          person: string
+          phone: string
+          province?: string | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          store_name: string
+          story?: string | null
+          tc_no: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          district?: string | null
+          document_url?: string | null
+          iban?: string
+          id?: string
+          person?: string
+          phone?: string
+          province?: string | null
+          reject_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          selfie_url?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          store_name?: string
+          story?: string | null
+          tc_no?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vendor_profiles: {
         Row: {
           avatar: string | null
@@ -287,14 +609,98 @@ export type Database = {
         }
         Relationships: []
       }
+      vendor_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          order_vendor_id: string | null
+          type: Database["public"]["Enums"]["txn_type"]
+          vendor_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_vendor_id?: string | null
+          type: Database["public"]["Enums"]["txn_type"]
+          vendor_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_vendor_id?: string | null
+          type?: Database["public"]["Enums"]["txn_type"]
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_transactions_order_vendor_id_fkey"
+            columns: ["order_vendor_id"]
+            isOneToOne: false
+            referencedRelation: "order_vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_transactions_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      approve_vendor_application: {
+        Args: { p_app_id: string }
+        Returns: string
+      }
+      confirm_received: {
+        Args: { p_order_vendor_id: string }
+        Returns: undefined
+      }
+      create_order: { Args: { p_items: Json; p_ship: Json }; Returns: string }
+      mark_shipped: {
+        Args: {
+          p_carrier: string
+          p_order_vendor_id: string
+          p_tracking_no: string
+        }
+        Returns: undefined
+      }
+      reject_vendor_application: {
+        Args: { p_app_id: string; p_reason: string }
+        Returns: undefined
+      }
     }
     Enums: {
+      application_status: "pending" | "approved" | "rejected"
+      escrow_status:
+        | "pending"
+        | "shipped"
+        | "delivered"
+        | "released"
+        | "refunded"
+        | "disputed"
+      order_status:
+        | "pending"
+        | "paid"
+        | "partially_shipped"
+        | "shipped"
+        | "completed"
+        | "cancelled"
+        | "refunded"
+      payment_provider: "stripe" | "iyzico"
+      payment_status: "pending" | "paid" | "failed" | "refunded"
+      txn_type: "sale" | "commission" | "payout" | "refund" | "adjustment"
       user_role: "user" | "vendor" | "admin"
     }
     CompositeTypes: {
@@ -423,6 +829,27 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      application_status: ["pending", "approved", "rejected"],
+      escrow_status: [
+        "pending",
+        "shipped",
+        "delivered",
+        "released",
+        "refunded",
+        "disputed",
+      ],
+      order_status: [
+        "pending",
+        "paid",
+        "partially_shipped",
+        "shipped",
+        "completed",
+        "cancelled",
+        "refunded",
+      ],
+      payment_provider: ["stripe", "iyzico"],
+      payment_status: ["pending", "paid", "failed", "refunded"],
+      txn_type: ["sale", "commission", "payout", "refund", "adjustment"],
       user_role: ["user", "vendor", "admin"],
     },
   },
