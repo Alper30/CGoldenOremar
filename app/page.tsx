@@ -11,7 +11,7 @@ import { Newsletter } from "@/components/Newsletter";
 import { StarRating } from "@/components/StarRating";
 import { useCatalog } from "@/components/CatalogProvider";
 import { useStore } from "@/components/store";
-import { ArrowRightIcon } from "@/components/icons";
+import { ArrowRightIcon, VerifiedIcon } from "@/components/icons";
 
 function SectionHead({
   eyebrow,
@@ -114,13 +114,34 @@ export default function HomePage() {
                 {t("sellerTitle")}
               </h2>
               <p className="mt-4 leading-relaxed text-muted">{t("sellerSub")}</p>
-              <Link
-                href="/nasil-calisir"
-                className="mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep"
-              >
-                {t("sellerCta")}
-                <ArrowRightIcon className="h-4 w-4" />
-              </Link>
+
+              {/* Avantajlar */}
+              <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+                {["sellerB1", "sellerB2", "sellerB3", "sellerB4"].map((k) => (
+                  <li key={k} className="flex items-center gap-2.5 text-sm text-forest-deep">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-success/15 text-success">
+                      <VerifiedIcon className="h-3.5 w-3.5" />
+                    </span>
+                    {t(k)}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/satici-ol"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep"
+                >
+                  {t("sellerCtaPrimary")}
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/nasil-calisir"
+                  className="inline-flex items-center gap-2 rounded-full border border-line px-6 py-3.5 text-sm font-semibold text-forest transition-colors hover:border-gold/50 hover:text-gold"
+                >
+                  {t("sellerCta")}
+                </Link>
+              </div>
             </div>
             <div className="relative min-h-[280px] lg:min-h-full">
               <Image

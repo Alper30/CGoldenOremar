@@ -28,6 +28,15 @@ const slideDefs: SlideDef[] = [
     ctaKey: "heroCta1",
   },
   {
+    image: "/images/seller-cta.png",
+    href: "/satici-ol",
+    tagKey: "heroTagSeller",
+    badgeKey: "heroBadgeSeller",
+    titleKey: "heroTitleSeller",
+    subKey: "heroSubSeller",
+    ctaKey: "heroCtaSeller",
+  },
+  {
     image: "/images/cat-honey.png",
     href: "/urunler?kategori=bal",
     tagKey: "heroTag2",
