@@ -5,8 +5,15 @@ import { loginAction } from "./actions";
 
 export const metadata = { title: "Giriş Yap · Golden Oremar" };
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ oauth_error?: string }>;
+}) {
   const { user } = await getAuthSnapshot();
   if (user) redirect("/");
-  return <AuthForm mode="login" action={loginAction} />;
+  const { oauth_error } = await searchParams;
+  return (
+    <AuthForm mode="login" action={loginAction} oauthError={Boolean(oauth_error)} />
+  );
 }
