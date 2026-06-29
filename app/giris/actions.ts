@@ -10,6 +10,8 @@ export type AuthState = { error?: string; info?: string };
 function mapError(msg: string): string {
   const m = msg.toLowerCase();
   if (m.includes("invalid login")) return "E-posta veya şifre hatalı.";
+  if (m.includes("not confirmed") || m.includes("not been confirmed"))
+    return "E-postanız henüz doğrulanmamış. Doğrulama bağlantısına tıklayın veya destekle iletişime geçin.";
   if (m.includes("already registered") || m.includes("already been registered"))
     return "Bu e-posta zaten kayıtlı. Giriş yapmayı deneyin.";
   if (m.includes("password")) return "Şifre en az 6 karakter olmalı.";
