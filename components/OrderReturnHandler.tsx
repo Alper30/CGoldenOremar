@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useStore } from "./store";
 import { OrderSuccessBanner } from "./OrderSuccessBanner";
@@ -25,7 +25,9 @@ export function OrderReturnHandler({
   const { t } = useStore();
   const router = useRouter();
   const done = useRef(false);
-  const [failed, setFailed] = useState(redirectStatus === "failed");
+  // Yalnızca Stripe açıkça "başarısız" derse (redirect_status=failed) başarısızlık
+  // göster; diğer tüm durumlarda gerçeğin kaynağı sunucudaki payment_status'tur.
+  const failed = redirectStatus === "failed";
 
   useEffect(() => {
     // failed başlangıç değeri redirect_status=failed durumunu zaten kapsar.
@@ -33,17 +35,20 @@ export function OrderReturnHandler({
     if (!paymentIntent) return; // doğrulanacak bir ödeme referansı yok
     done.current = true;
     (async () => {
+      // confirm sonucu ne olursa olsun sayfayı tazele → ödeme durumunun TEK
+      // kaynağı sunucudaki payment_status'tur. Böylece webhook bizden önce
+      // siparişi 'paid' yaptıysa (yarış durumu) confirm 400 dönse bile yanlış
+      // "başarısız" gösterilmez; tazelenen sayfa 'paid' ise banner çıkar.
       try {
-        const res = await fetch("/api/checkout/confirm", {
+        await fetch("/api/checkout/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ orderId, paymentIntentId: paymentIntent }),
         });
-        if (res.ok) router.refresh();
-        else setFailed(true);
       } catch {
-        setFailed(true);
+        // ağ hatası — yine de tazele; webhook ödemeyi sonuçlandırmış olabilir.
       }
+      router.refresh();
     })();
   }, [paid, failed, paymentIntent, orderId, router]);
 
