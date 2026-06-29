@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useStore } from "./store";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -36,7 +36,8 @@ export function VendorApplyForm({
     district: "",
     story: "",
   });
-  const [doc, setDoc] = useState<File | null>(null);
+  const [docFront, setDocFront] = useState<File | null>(null);
+  const [docBack, setDocBack] = useState<File | null>(null);
   const [selfie, setSelfie] = useState<File | null>(null);
 
   const upd = (k: keyof typeof form) => (v: string) =>
@@ -66,7 +67,7 @@ export function VendorApplyForm({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!doc || !selfie) {
+    if (!docFront || !docBack || !selfie) {
       toast(t("coError"));
       return;
     }
@@ -88,8 +89,9 @@ export function VendorApplyForm({
         return path;
       };
 
-      const [docPath, selfiePath] = await Promise.all([
-        upload(doc, "belge"),
+      const [frontPath, backPath, selfiePath] = await Promise.all([
+        upload(docFront, "belge-on"),
+        upload(docBack, "belge-arka"),
         upload(selfie, "selfie"),
       ]);
 
@@ -103,7 +105,8 @@ export function VendorApplyForm({
         province: form.province,
         district: form.district,
         story: form.story || null,
-        document_url: docPath,
+        document_url: frontPath,
+        document_back_url: backPath,
         selfie_url: selfiePath,
       });
       if (error) throw error;
@@ -154,8 +157,38 @@ export function VendorApplyForm({
               />
             </label>
           </div>
-          <FileField label={t("soDoc")} onChange={setDoc} file={doc} />
-          <FileField label={t("soSelfie")} onChange={setSelfie} file={selfie} />
+          <div className="sm:col-span-2">
+            <div className="rounded-2xl border border-line bg-cream/60 p-4">
+              <p className="text-sm font-semibold text-forest-deep">{t("soKycTitle")}</p>
+              <p className="mt-0.5 text-xs text-muted">{t("soKycSub")}</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <PhotoField
+                  step={1}
+                  label={t("soDocFront")}
+                  hint={t("soUploadHint")}
+                  uploaded={t("soUploaded")}
+                  file={docFront}
+                  onChange={setDocFront}
+                />
+                <PhotoField
+                  step={2}
+                  label={t("soDocBack")}
+                  hint={t("soUploadHint")}
+                  uploaded={t("soUploaded")}
+                  file={docBack}
+                  onChange={setDocBack}
+                />
+                <PhotoField
+                  step={3}
+                  label={t("soSelfie")}
+                  hint={t("soUploadHint")}
+                  uploaded={t("soUploaded")}
+                  file={selfie}
+                  onChange={setSelfie}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-4 flex items-start gap-2 rounded-2xl bg-amber-bg px-4 py-3 text-xs text-gold-deep">
@@ -203,26 +236,65 @@ function Field({
   );
 }
 
-function FileField({
+// Tek bir fotoğraf alanı: tıklayınca kamera / galeri / dosya seçeneği sunar
+// (accept="image/*" + capture YOK → mobilde "Fotoğraf Çek / Galeri / Dosya"
+// menüsü çıkar). Seçilince önizleme + onay işareti gösterir.
+function PhotoField({
+  step,
   label,
-  onChange,
+  hint,
+  uploaded,
   file,
+  onChange,
 }: {
+  step: number;
   label: string;
-  onChange: (f: File | null) => void;
+  hint: string;
+  uploaded: string;
   file: File | null;
+  onChange: (f: File | null) => void;
 }) {
+  // Önizleme URL'i dosyadan türetilir (setState-in-effect'ten kaçınmak için
+  // useMemo); değişince/unmount'ta eski URL temizlenir.
+  const preview = useMemo(
+    () => (file ? URL.createObjectURL(file) : null),
+    [file],
+  );
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-forest-deep">{label}</span>
+    <label className="relative flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1.5 overflow-hidden rounded-xl border-2 border-dashed border-line bg-card text-center transition-colors hover:border-gold/60">
       <input
         type="file"
         accept="image/*"
-        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
         required
-        className="block w-full text-sm text-muted file:mr-3 file:rounded-full file:border-0 file:bg-forest file:px-4 file:py-2 file:text-xs file:font-semibold file:text-cream hover:file:bg-forest-deep"
+        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+        className="sr-only"
       />
-      {file && <span className="mt-1 block truncate text-xs text-success">{file.name}</span>}
+      {preview ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={preview} alt={label} className="absolute inset-0 h-full w-full object-cover" />
+          <span className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-success text-white">
+            <VerifiedIcon className="h-3.5 w-3.5" />
+          </span>
+          <span className="absolute inset-x-0 bottom-0 bg-forest-deep/75 py-1 text-[11px] font-semibold text-cream">
+            {label} · {uploaded}
+          </span>
+        </>
+      ) : (
+        <>
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-bg text-sm font-bold text-gold-deep">
+            {step}
+          </span>
+          <span className="px-2 text-xs font-semibold text-forest-deep">{label}</span>
+          <span className="px-3 text-[10px] leading-tight text-muted">{hint}</span>
+        </>
+      )}
     </label>
   );
 }

@@ -478,6 +478,7 @@ export type Database = {
         Row: {
           created_at: string
           district: string | null
+          document_back_url: string | null
           document_url: string | null
           iban: string
           id: string
@@ -497,6 +498,7 @@ export type Database = {
         Insert: {
           created_at?: string
           district?: string | null
+          document_back_url?: string | null
           document_url?: string | null
           iban: string
           id?: string
@@ -516,6 +518,7 @@ export type Database = {
         Update: {
           created_at?: string
           district?: string | null
+          document_back_url?: string | null
           document_url?: string | null
           iban?: string
           id?: string

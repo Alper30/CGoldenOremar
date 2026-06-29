@@ -16,6 +16,7 @@ type App = {
   district: string | null;
   story: string | null;
   document_url: string | null;
+  document_back_url: string | null;
   selfie_url: string | null;
   created_at: string;
 };
@@ -101,7 +102,13 @@ function AppCard({ app }: { app: App }) {
             onClick={() => viewFile(app.document_url)}
             className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-forest hover:border-forest/40"
           >
-            {t("soDoc")}
+            {t("soDocFront")}
+          </button>
+          <button
+            onClick={() => viewFile(app.document_back_url)}
+            className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-forest hover:border-forest/40"
+          >
+            {t("soDocBack")}
           </button>
           <button
             onClick={() => viewFile(app.selfie_url)}

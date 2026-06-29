@@ -8,7 +8,7 @@ export default async function AdminApplicationsPage() {
   const { data } = await supabase
     .from("vendor_applications")
     .select(
-      "id, store_name, person, tc_no, iban, phone, province, district, story, document_url, selfie_url, created_at",
+      "id, store_name, person, tc_no, iban, phone, province, district, story, document_url, document_back_url, selfie_url, created_at",
     )
     .eq("status", "pending")
     .order("created_at", { ascending: true });
