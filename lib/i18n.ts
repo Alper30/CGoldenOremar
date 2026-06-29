@@ -310,6 +310,7 @@ export const tr: Dict = {
 
   // ---- Admin Paneli (operatör) ----
   adPanel: "Yönetim",
+  adTitle: "Yönetim Paneli",
   adDashboard: "Gösterge Paneli",
   adApplications: "Satıcı Başvuruları",
   adProductMod: "Ürün Moderasyonu",
