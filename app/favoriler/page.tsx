@@ -17,7 +17,7 @@ export default function FavoritesPage() {
         <p className="text-xs font-semibold uppercase tracking-wider text-gold">
           {t("favListem")}
         </p>
-        <h1 className="mt-1 flex items-center gap-2 font-display text-3xl text-forest-deep sm:text-4xl">
+        <h1 className="mt-1 flex items-center gap-2 font-display text-4xl text-forest-deep">
           <HeartIcon className="h-7 w-7 text-gold" />
           {t("favTitle")}
         </h1>

@@ -129,7 +129,7 @@ export default function BookingPage() {
             <LeafIcon className="h-4 w-4" />
             Üreticiyle Tanışın
           </p>
-          <h1 className="mt-4 font-display text-3xl text-forest-deep sm:text-4xl lg:text-5xl">
+          <h1 className="mt-4 font-display text-4xl text-forest-deep lg:text-5xl">
             Randevu Al
           </h1>
           <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">
