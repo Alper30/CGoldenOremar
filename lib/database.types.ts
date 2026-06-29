@@ -194,6 +194,7 @@ export type Database = {
           grand_total: number
           id: string
           items_total: number
+          payment_intent_id: string | null
           payment_provider:
             | Database["public"]["Enums"]["payment_provider"]
             | null
@@ -213,6 +214,7 @@ export type Database = {
           grand_total?: number
           id?: string
           items_total?: number
+          payment_intent_id?: string | null
           payment_provider?:
             | Database["public"]["Enums"]["payment_provider"]
             | null
@@ -232,6 +234,7 @@ export type Database = {
           grand_total?: number
           id?: string
           items_total?: number
+          payment_intent_id?: string | null
           payment_provider?:
             | Database["public"]["Enums"]["payment_provider"]
             | null
@@ -659,6 +662,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_stats: { Args: never; Returns: Json }
       approve_vendor_application: {
         Args: { p_app_id: string }
         Returns: string
@@ -668,6 +672,14 @@ export type Database = {
         Returns: undefined
       }
       create_order: { Args: { p_items: Json; p_ship: Json }; Returns: string }
+      mark_order_paid: {
+        Args: {
+          p_order_id: string
+          p_provider: Database["public"]["Enums"]["payment_provider"]
+          p_ref: string
+        }
+        Returns: undefined
+      }
       mark_shipped: {
         Args: {
           p_carrier: string
@@ -676,10 +688,17 @@ export type Database = {
         }
         Returns: undefined
       }
+      open_dispute: { Args: { p_order_vendor_id: string }; Returns: undefined }
       reject_vendor_application: {
         Args: { p_app_id: string; p_reason: string }
         Returns: undefined
       }
+      request_payout: { Args: { p_amount: number }; Returns: string }
+      resolve_dispute: {
+        Args: { p_action: string; p_order_vendor_id: string }
+        Returns: undefined
+      }
+      update_vendor_profile: { Args: { p_patch: Json }; Returns: undefined }
     }
     Enums: {
       application_status: "pending" | "approved" | "rejected"
