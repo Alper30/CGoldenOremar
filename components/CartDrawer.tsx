@@ -8,7 +8,7 @@ import { fmtPrice } from "@/lib/data";
 import { XIcon, PlusIcon, MinusIcon, TrashIcon, CartIcon, ArrowRightIcon } from "./icons";
 
 export function CartDrawer() {
-  const { cart, cartOpen, setCartOpen, setQty, remove, clearCart, toast, t } = useStore();
+  const { cart, cartOpen, setCartOpen, setQty, remove, clearCart, t } = useStore();
   const { getProduct } = useCatalog();
 
   const lines = cart
@@ -140,13 +140,14 @@ export function CartDrawer() {
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted">{t("cartShipNote")}</p>
-              <button
-                onClick={() => toast(t("cartCheckout"))}
+              <Link
+                href="/odeme"
+                onClick={() => setCartOpen(false)}
                 className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep"
               >
                 {t("cartCheckout")}
                 <ArrowRightIcon className="h-4 w-4" />
-              </button>
+              </Link>
             </div>
           </>
         )}
