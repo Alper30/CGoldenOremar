@@ -18,14 +18,14 @@ export function PayoutsManager({ payouts }: { payouts: Payout[] }) {
   const { t } = useStore();
   if (payouts.length === 0) {
     return (
-      <div className="rounded-2xl border border-line bg-card p-10 text-center text-muted">
+      <div className="rounded-2xl border border-border bg-card p-10 text-center text-muted-foreground">
         {t("vpNoTxn")}
       </div>
     );
   }
   return (
     <div>
-      <h1 className="mb-4 font-display text-2xl text-forest-deep">{t("adPayouts")}</h1>
+      <h1 className="mb-4 font-display text-2xl text-foreground">{t("adPayouts")}</h1>
       <div className="space-y-2">
         {payouts.map((p) => (
           <Row key={p.id} p={p} />
@@ -53,20 +53,20 @@ function Row({ p }: { p: Payout }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-card p-4">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4">
       <div>
-        <p className="text-sm font-semibold text-forest-deep">{p.vendor_profiles?.name}</p>
-        <p className="text-xs text-muted">
+        <p className="text-sm font-semibold text-foreground">{p.vendor_profiles?.name}</p>
+        <p className="text-xs text-muted-foreground">
           {p.iban} ·{" "}
           {new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date(p.created_at))}
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <span className="font-display text-lg text-forest-deep">{fmtPrice(Number(p.amount))}</span>
+        <span className="font-display text-lg text-foreground">{fmtPrice(Number(p.amount))}</span>
         <button
           onClick={markPaid}
           disabled={busy}
-          className="rounded-full bg-forest px-4 py-2 text-xs font-semibold text-cream hover:bg-forest-deep disabled:opacity-60"
+          className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary disabled:opacity-60"
         >
           {t("adMarkPaid")}
         </button>

@@ -30,7 +30,7 @@ export function AdminOrders({
   const { t } = useStore();
   return (
     <div>
-      <h1 className="mb-4 font-display text-2xl text-forest-deep">{t("adOrders")}</h1>
+      <h1 className="mb-4 font-display text-2xl text-foreground">{t("adOrders")}</h1>
 
       {disputed.length > 0 && (
         <section className="mb-8">
@@ -43,9 +43,9 @@ export function AdminOrders({
         </section>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-line bg-card">
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-canvas text-left text-xs text-muted">
+          <thead className="bg-muted text-left text-xs text-muted-foreground">
             <tr>
               <th className="px-4 py-3 font-medium">{t("coOrderNo")}</th>
               <th className="px-4 py-3 font-medium">{t("ordDate")}</th>
@@ -53,13 +53,13 @@ export function AdminOrders({
               <th className="px-4 py-3 text-right font-medium">{t("coTotal")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-border">
             {recent.map((o) => (
               <tr key={o.id}>
-                <td className="px-4 py-3 font-medium text-forest-deep">
+                <td className="px-4 py-3 font-medium text-foreground">
                   #{o.id.slice(0, 8).toUpperCase()}
                 </td>
-                <td className="px-4 py-3 text-muted">
+                <td className="px-4 py-3 text-muted-foreground">
                   {new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium" }).format(new Date(o.created_at))}
                 </td>
                 <td className="px-4 py-3">
@@ -67,13 +67,13 @@ export function AdminOrders({
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                       o.payment_status === "paid"
                         ? "bg-green-50 text-green-700"
-                        : "bg-amber-bg text-gold-deep"
+                        : "bg-gold/10 text-gold-deep"
                     }`}
                   >
                     {t(o.payment_status === "paid" ? "payPaid" : "payPending")}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right font-display text-forest-deep">
+                <td className="px-4 py-3 text-right font-display text-foreground">
                   {fmtPrice(Number(o.grand_total))}
                 </td>
               </tr>
@@ -106,11 +106,11 @@ function DisputeRow({ d }: { d: Disputed }) {
   return (
     <div className="rounded-2xl border border-red-200 bg-red-50/50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-sm text-ink/80">
-          <strong className="text-forest-deep">{d.vendor_profiles?.name}</strong> ·{" "}
+        <span className="text-sm text-foreground/80">
+          <strong className="text-foreground">{d.vendor_profiles?.name}</strong> ·{" "}
           {d.order_items.map((i) => `${i.qty}× ${i.name}`).join(", ")}
         </span>
-        <span className="font-display text-sm text-forest-deep">{fmtPrice(Number(d.items_subtotal))}</span>
+        <span className="font-display text-sm text-foreground">{fmtPrice(Number(d.items_subtotal))}</span>
       </div>
       <div className="mt-3 flex gap-2">
         <button
@@ -123,7 +123,7 @@ function DisputeRow({ d }: { d: Disputed }) {
         <button
           onClick={() => resolve("refund")}
           disabled={busy}
-          className="rounded-full border border-line px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 disabled:opacity-60"
+          className="rounded-full border border-border px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 disabled:opacity-60"
         >
           {t("adRefund")}
         </button>

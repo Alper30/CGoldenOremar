@@ -668,6 +668,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_dashboard: { Args: { p_days?: number }; Returns: Json }
       admin_stats: { Args: never; Returns: Json }
       approve_vendor_application: {
         Args: { p_app_id: string }

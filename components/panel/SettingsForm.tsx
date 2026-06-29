@@ -47,8 +47,8 @@ export function SettingsForm({ settings }: { settings: Settings }) {
 
   return (
     <div>
-      <h1 className="mb-4 font-display text-2xl text-forest-deep">{t("adSettings")}</h1>
-      <form onSubmit={save} className="max-w-md rounded-3xl border border-line bg-card p-6">
+      <h1 className="mb-4 font-display text-2xl text-foreground">{t("adSettings")}</h1>
+      <form onSubmit={save} className="max-w-md rounded-3xl border border-border bg-card p-6">
         <div className="space-y-4">
           <In label={t("adCommissionRate")} value={form.commissionPct} onChange={upd("commissionPct")} />
           <In label={t("adEscrowDays")} value={form.days} onChange={upd("days")} />
@@ -58,7 +58,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         <button
           type="submit"
           disabled={busy}
-          className="mt-5 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-cream hover:bg-gold-deep disabled:opacity-60"
+          className="mt-5 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-gold-deep disabled:opacity-60"
         >
           {busy ? t("vpSaving") : t("adSaveSettings")}
         </button>
@@ -78,13 +78,13 @@ function In({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-forest-deep">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-foreground">{label}</span>
       <input
         type="number"
         step="0.01"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-11 w-full rounded-xl border border-line bg-cream px-3.5 text-sm text-ink outline-none focus:border-gold"
+        className="h-11 w-full rounded-xl border border-border bg-background px-3.5 text-sm text-foreground outline-none focus:border-gold"
       />
     </label>
   );

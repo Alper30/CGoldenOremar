@@ -12,10 +12,10 @@ export default async function AdminVendorsPage() {
 
   return (
     <div>
-      <h1 className="mb-4 font-display text-2xl text-forest-deep">Satıcılar</h1>
-      <div className="overflow-x-auto rounded-2xl border border-line bg-card">
+      <h1 className="mb-4 font-display text-2xl text-foreground">Satıcılar</h1>
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-canvas text-left text-xs text-muted">
+          <thead className="bg-muted text-left text-xs text-muted-foreground">
             <tr>
               <th className="px-4 py-3 font-medium">Mağaza</th>
               <th className="px-4 py-3 font-medium">Üretici</th>
@@ -25,16 +25,16 @@ export default async function AdminVendorsPage() {
               <th className="px-4 py-3 text-center font-medium">KYC</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-border">
             {(vendors ?? []).map((v) => (
               <tr key={v.id}>
-                <td className="px-4 py-3 font-medium text-forest-deep">{v.name}</td>
-                <td className="px-4 py-3 text-muted">{v.person}</td>
-                <td className="px-4 py-3 text-muted">{v.location ?? "—"}</td>
-                <td className="px-4 py-3 text-muted">
+                <td className="px-4 py-3 font-medium text-foreground">{v.name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{v.person}</td>
+                <td className="px-4 py-3 text-muted-foreground">{v.location ?? "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">
                   {v.rating} · {v.units_sold} satış
                 </td>
-                <td className="px-4 py-3 text-right font-display text-forest-deep">
+                <td className="px-4 py-3 text-right font-display text-foreground">
                   {fmtPrice(Number(v.balance))}
                 </td>
                 <td className="px-4 py-3 text-center">
@@ -43,7 +43,7 @@ export default async function AdminVendorsPage() {
                       ✓
                     </span>
                   ) : (
-                    <span className="text-muted">—</span>
+                    <span className="text-muted-foreground">—</span>
                   )}
                 </td>
               </tr>

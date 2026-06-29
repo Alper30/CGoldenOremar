@@ -25,14 +25,14 @@ export function ApplicationsManager({ applications }: { applications: App[] }) {
   const { t } = useStore();
   if (applications.length === 0) {
     return (
-      <div className="rounded-2xl border border-line bg-card p-10 text-center text-muted">
+      <div className="rounded-2xl border border-border bg-card p-10 text-center text-muted-foreground">
         {t("adNoApps")}
       </div>
     );
   }
   return (
     <div>
-      <h1 className="mb-4 font-display text-2xl text-forest-deep">{t("adApplications")}</h1>
+      <h1 className="mb-4 font-display text-2xl text-foreground">{t("adApplications")}</h1>
       <div className="space-y-4">
         {applications.map((a) => (
           <AppCard key={a.id} app={a} />
@@ -80,46 +80,46 @@ function AppCard({ app }: { app: App }) {
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-card p-5">
+    <div className="rounded-2xl border border-border bg-card p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-display text-lg text-forest-deep">{app.store_name}</p>
-          <p className="text-sm text-muted">
+          <p className="font-display text-lg text-foreground">{app.store_name}</p>
+          <p className="text-sm text-muted-foreground">
             {app.person} · {app.phone}
           </p>
-          <p className="mt-1 text-sm text-ink/80">
+          <p className="mt-1 text-sm text-foreground/80">
             TC: {app.tc_no} · IBAN: {app.iban}
           </p>
-          <p className="text-sm text-muted">
+          <p className="text-sm text-muted-foreground">
             {app.district}
             {app.district && app.province ? " / " : ""}
             {app.province}
           </p>
-          {app.story && <p className="mt-2 max-w-xl text-sm text-ink/70">{app.story}</p>}
+          {app.story && <p className="mt-2 max-w-xl text-sm text-foreground/70">{app.story}</p>}
         </div>
         <div className="flex flex-col gap-2">
           <button
             onClick={() => viewFile(app.document_url)}
-            className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-forest hover:border-forest/40"
+            className="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-foreground hover:border-primary/40"
           >
             {t("soDocFront")}
           </button>
           <button
             onClick={() => viewFile(app.document_back_url)}
-            className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-forest hover:border-forest/40"
+            className="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-foreground hover:border-primary/40"
           >
             {t("soDocBack")}
           </button>
           <button
             onClick={() => viewFile(app.selfie_url)}
-            className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-forest hover:border-forest/40"
+            className="rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-foreground hover:border-primary/40"
           >
             {t("soSelfie")}
           </button>
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+      <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
         <button
           onClick={approve}
           disabled={busy}
@@ -130,7 +130,7 @@ function AppCard({ app }: { app: App }) {
         {!rejecting ? (
           <button
             onClick={() => setRejecting(true)}
-            className="rounded-full border border-line px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+            className="rounded-full border border-border px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
           >
             {t("adReject")}
           </button>
@@ -140,7 +140,7 @@ function AppCard({ app }: { app: App }) {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder={t("adRejectReason")}
-              className="h-10 flex-1 rounded-xl border border-line bg-cream px-3 text-sm outline-none focus:border-gold"
+              className="h-10 flex-1 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:border-gold"
             />
             <button
               onClick={reject}

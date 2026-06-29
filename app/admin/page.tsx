@@ -1,11 +1,8 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { AdminDashboard, type Stats } from "@/components/panel/AdminDashboard";
+import { Dashboard } from "@/components/admin/dashboard/dashboard";
 
-export const metadata = { title: "Yönetim · Golden Oremar" };
+export const metadata = { title: "Gösterge Paneli · Yönetim" };
 
-export default async function AdminHome() {
-  const supabase = await createSupabaseServerClient();
-  // admin_stats RPC `Json` döner; bilinen şekle (Stats) köprülenir.
-  const { data } = await supabase.rpc("admin_stats");
-  return <AdminDashboard stats={(data ?? {}) as unknown as Stats} />;
+export default function AdminHome() {
+  // Veri istemcide admin_dashboard RPC'sinden (tarih aralığı seçilebilir) gelir.
+  return <Dashboard />;
 }
