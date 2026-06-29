@@ -123,7 +123,7 @@ export function Hero() {
                 <span>{t(s.badgeKey)}</span>
               </span>
 
-              <h1 className="mt-5 font-display text-4xl font-medium leading-[1.08] text-white sm:text-5xl lg:text-[3.4rem]">
+              <h1 className="mt-5 font-display text-3xl font-medium leading-[1.12] text-white sm:text-5xl lg:text-[3.4rem]">
                 {t(s.titleKey)}
               </h1>
 

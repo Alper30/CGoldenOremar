@@ -82,7 +82,7 @@ export default function AboutPage() {
           <p className="text-xs font-semibold uppercase tracking-wider text-gold">
             Golden Oremar
           </p>
-          <h1 className="mt-2 font-display text-4xl text-forest-deep lg:text-5xl">
+          <h1 className="mt-2 font-display text-3xl text-forest-deep sm:text-4xl lg:text-5xl">
             Hakkımızda
           </h1>
           <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">

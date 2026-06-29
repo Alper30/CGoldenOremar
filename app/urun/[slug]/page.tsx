@@ -73,7 +73,7 @@ export default async function ProductPage({
             ))}
           </div>
 
-          <h1 className="mt-3 font-display text-4xl leading-tight text-forest-deep">
+          <h1 className="mt-3 font-display text-3xl leading-tight text-forest-deep sm:text-4xl">
             {product.name}
           </h1>
 
