@@ -29,12 +29,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ mock: true });
   }
 
-  const pi = await stripe.paymentIntents.create({
-    amount: Math.round(Number(order.grand_total) * 100),
-    currency: "try",
-    metadata: { order_id: order.id, buyer_id: user.id },
-    automatic_payment_methods: { enabled: true },
-  });
+  // idempotencyKey: aynı sipariş için tekrar çağrıda yeni PaymentIntent üretilmez
+  // (state drift / çoğalan intent engeli).
+  const pi = await stripe.paymentIntents.create(
+    {
+      amount: Math.round(Number(order.grand_total) * 100),
+      currency: "try",
+      metadata: { order_id: order.id, buyer_id: user.id },
+      automatic_payment_methods: { enabled: true },
+    },
+    { idempotencyKey: `order_${order.id}` },
+  );
 
   return NextResponse.json({ clientSecret: pi.client_secret, mock: false });
 }

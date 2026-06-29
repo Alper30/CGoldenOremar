@@ -24,8 +24,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Geçersiz sipariş" }, { status: 400 });
   }
 
-  let ref = "mock";
-  if (stripeEnabled && stripe && paymentIntentId) {
+  let ref: string;
+  if (stripeEnabled && stripe) {
+    // Stripe yapılandırılmışsa ödeme ZORUNLU doğrulanır — paymentIntentId olmadan
+    // "ödendi" yapılamaz (bypass engeli).
+    if (!paymentIntentId) {
+      return NextResponse.json({ error: "Ödeme doğrulanamadı" }, { status: 400 });
+    }
     const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
     if (pi.status !== "succeeded") {
       return NextResponse.json({ error: "Ödeme tamamlanmadı" }, { status: 400 });
@@ -33,7 +38,17 @@ export async function POST(req: NextRequest) {
     if (pi.amount !== Math.round(Number(order.grand_total) * 100)) {
       return NextResponse.json({ error: "Tutar uyuşmuyor" }, { status: 400 });
     }
+    // PaymentIntent yeniden kullanım engeli: intent bu siparişe ait olmalı.
+    if (pi.metadata?.order_id !== orderId) {
+      return NextResponse.json({ error: "Ödeme bu siparişe ait değil" }, { status: 400 });
+    }
     ref = pi.id;
+  } else {
+    // Stripe anahtarı hiç yoksa yalnızca geliştirme/test ortamında mock onay.
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Ödeme yapılandırılmamış" }, { status: 503 });
+    }
+    ref = "mock";
   }
 
   const { error } = await supabase.rpc("mark_order_paid", {
