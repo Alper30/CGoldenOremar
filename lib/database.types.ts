@@ -677,6 +677,7 @@ export type Database = {
           p_order_id: string
           p_provider: Database["public"]["Enums"]["payment_provider"]
           p_ref: string
+          p_secret: string
         }
         Returns: undefined
       }
