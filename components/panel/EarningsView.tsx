@@ -6,14 +6,14 @@ import { useStore } from "../store";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { fmtPrice } from "@/lib/data";
 
-type Txn = {
+export type Txn = {
   id: string;
   type: string;
   amount: number;
   description: string | null;
   created_at: string;
 };
-type Payout = { id: string; amount: number; status: string; created_at: string };
+export type Payout = { id: string; amount: number; status: string; created_at: string };
 
 export function EarningsView({
   balance,

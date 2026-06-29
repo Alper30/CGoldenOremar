@@ -1,6 +1,6 @@
 import { getMyVendor } from "@/lib/vendor";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { VendorOrders } from "@/components/panel/VendorOrders";
+import { VendorOrders, type OV } from "@/components/panel/VendorOrders";
 
 export const metadata = { title: "Siparişler · Golden Oremar" };
 
@@ -17,5 +17,5 @@ export default async function VendorOrdersPage() {
     .eq("vendor_id", vendor.id)
     .order("created_at", { ascending: false });
 
-  return <VendorOrders orders={(data ?? []) as never} />;
+  return <VendorOrders orders={(data ?? []) as unknown as OV[]} />;
 }

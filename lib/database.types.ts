@@ -294,6 +294,7 @@ export type Database = {
           escrow_auto_confirm_days: number
           free_shipping_threshold: number
           id: boolean
+          shipping_fee: number
           updated_at: string
         }
         Insert: {
@@ -301,6 +302,7 @@ export type Database = {
           escrow_auto_confirm_days?: number
           free_shipping_threshold?: number
           id?: boolean
+          shipping_fee?: number
           updated_at?: string
         }
         Update: {
@@ -308,6 +310,7 @@ export type Database = {
           escrow_auto_confirm_days?: number
           free_shipping_threshold?: number
           id?: boolean
+          shipping_fee?: number
           updated_at?: string
         }
         Relationships: []
@@ -675,6 +678,14 @@ export type Database = {
         Returns: undefined
       }
       create_order: { Args: { p_items: Json; p_ship: Json }; Returns: string }
+      finalize_order_payment: {
+        Args: {
+          p_order_id: string
+          p_provider: Database["public"]["Enums"]["payment_provider"]
+          p_ref: string
+        }
+        Returns: undefined
+      }
       mark_order_paid: {
         Args: {
           p_order_id: string
@@ -684,6 +695,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      mark_payout_paid: { Args: { p_payout_id: string }; Returns: undefined }
       mark_shipped: {
         Args: {
           p_carrier: string

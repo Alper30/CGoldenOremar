@@ -1,6 +1,6 @@
 import { getMyVendor } from "@/lib/vendor";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { EarningsView } from "@/components/panel/EarningsView";
+import { EarningsView, type Txn, type Payout } from "@/components/panel/EarningsView";
 
 export const metadata = { title: "Kazanç · Golden Oremar" };
 
@@ -25,8 +25,8 @@ export default async function VendorEarningsPage() {
   return (
     <EarningsView
       balance={Number(vendor.balance)}
-      transactions={(txnRes.data ?? []) as never}
-      payouts={(payoutRes.data ?? []) as never}
+      transactions={(txnRes.data ?? []) as unknown as Txn[]}
+      payouts={(payoutRes.data ?? []) as unknown as Payout[]}
     />
   );
 }

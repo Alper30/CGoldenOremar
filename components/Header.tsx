@@ -141,7 +141,7 @@ export function Header() {
               href={`/urunler?kategori=${c.slug}`}
               className="whitespace-nowrap px-3 py-3 text-sm font-medium text-ink/80 transition-colors hover:text-gold"
             >
-              {t(catNameKey[c.slug])}
+              {catNameKey[c.slug] ? t(catNameKey[c.slug]) : c.name}
             </Link>
           ))}
           <span className="mx-1 ml-auto hidden h-4 w-px bg-line sm:block" />
@@ -196,7 +196,7 @@ export function Header() {
                 onClick={() => setOpen(false)}
                 className="rounded-xl border border-line bg-card px-3 py-2.5 text-sm font-medium text-forest-deep transition-colors hover:border-gold/50 hover:text-gold"
               >
-                {t(catNameKey[c.slug])}
+                {catNameKey[c.slug] ? t(catNameKey[c.slug]) : c.name}
               </Link>
             ))}
           </div>

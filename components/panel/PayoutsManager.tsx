@@ -6,7 +6,7 @@ import { useStore } from "../store";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { fmtPrice } from "@/lib/data";
 
-type Payout = {
+export type Payout = {
   id: string;
   amount: number;
   iban: string | null;
@@ -43,10 +43,9 @@ function Row({ p }: { p: Payout }) {
   async function markPaid() {
     setBusy(true);
     const supabase = createSupabaseBrowserClient();
-    const { error } = await supabase
-      .from("payouts")
-      .update({ status: "paid", processed_at: new Date().toISOString() })
-      .eq("id", p.id);
+    // Para tablosuna doğrudan yazma YOK — guard'lı RPC (admin kontrolü + durum
+    // doğrulaması DB'de). Bakiye, payout talebinde zaten düşüldü → burada düşülmez.
+    const { error } = await supabase.rpc("mark_payout_paid", { p_payout_id: p.id });
     setBusy(false);
     if (error) return toast(t("coError"));
     toast(t("adDone"));

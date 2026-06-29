@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,8 +21,10 @@ import { ArrowRightIcon, ShieldIcon, CartIcon } from "@/components/icons";
 const pubKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = pubKey ? loadStripe(pubKey) : null;
 
-const FREE_THRESHOLD = 250;
-const SHIP_FEE = 49.9;
+// Kargo eşiği/ücreti SUNUCUDAN (platform_settings) gelir; sabit kod yok.
+// Bu değerler yalnız sipariş oluşmadan ÖNCEKİ tahmini özet içindir — kesin tutar
+// create_order ile DB'de hesaplanıp `totals` olarak gelir ve bunların yerini alır.
+const SHIP_FALLBACK = { threshold: 250, fee: 49.9 };
 
 type Totals = { items: number; shipping: number; grand: number };
 
@@ -55,7 +57,24 @@ function CheckoutInner({
     .map((i) => ({ ...i, product: getProduct(i.slug) }))
     .filter((l) => l.product);
   const subtotal = lines.reduce((s, l) => s + l.product!.price * l.qty, 0);
-  const estShipping = subtotal >= FREE_THRESHOLD || subtotal === 0 ? 0 : SHIP_FEE;
+
+  const [ship, setShip] = useState(SHIP_FALLBACK);
+  useEffect(() => {
+    const supabase = createSupabaseBrowserClient();
+    supabase
+      .from("platform_settings")
+      .select("free_shipping_threshold, shipping_fee")
+      .eq("id", true)
+      .single()
+      .then(({ data }) => {
+        if (data)
+          setShip({
+            threshold: Number(data.free_shipping_threshold),
+            fee: Number(data.shipping_fee),
+          });
+      });
+  }, []);
+  const estShipping = subtotal >= ship.threshold || subtotal === 0 ? 0 : ship.fee;
 
   const [step, setStep] = useState<"address" | "pay">("address");
   const [loading, setLoading] = useState(false);

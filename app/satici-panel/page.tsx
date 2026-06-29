@@ -1,6 +1,6 @@
 import { getMyVendor } from "@/lib/vendor";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { VendorDashboard } from "@/components/panel/VendorDashboard";
+import { VendorDashboard, type RecentOV } from "@/components/panel/VendorDashboard";
 
 export const metadata = { title: "Satıcı Paneli · Golden Oremar" };
 
@@ -33,7 +33,7 @@ export default async function VendorPanelHome() {
       vendor={vendor}
       pending={pendingRes.count ?? 0}
       published={publishedRes.count ?? 0}
-      recent={(recentRes.data ?? []) as never}
+      recent={(recentRes.data ?? []) as unknown as RecentOV[]}
     />
   );
 }

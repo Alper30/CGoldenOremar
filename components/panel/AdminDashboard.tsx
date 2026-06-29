@@ -15,7 +15,7 @@ import { useStore } from "../store";
 import { fmtPrice } from "@/lib/data";
 
 type Daily = { day: string; orders: number; revenue: number };
-type Stats = {
+export type Stats = {
   orders_total: number;
   orders_paid: number;
   revenue_total: number;

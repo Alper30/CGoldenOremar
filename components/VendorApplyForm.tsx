@@ -58,9 +58,15 @@ export function VendorApplyForm({
     );
   }
   if (submitted || application?.status === "pending") {
+    // Yeni gönderim → "alındı"; zaten beklemedeki başvuru → "inceleniyor".
     return (
       <Shell>
-        <StateCard title={t("soDone")} href="/hesabim" label={t("navAccount")} good />
+        <StateCard
+          title={submitted ? t("soDone") : t("soPending")}
+          href="/hesabim"
+          label={t("navAccount")}
+          good
+        />
       </Shell>
     );
   }

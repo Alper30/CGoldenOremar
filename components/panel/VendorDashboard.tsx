@@ -13,7 +13,7 @@ type Vendor = {
   review_count: number;
 };
 
-type RecentOV = {
+export type RecentOV = {
   id: string;
   escrow_status: string;
   net_amount: number;

@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { PayoutsManager } from "@/components/panel/PayoutsManager";
+import { PayoutsManager, type Payout } from "@/components/panel/PayoutsManager";
 
 export const metadata = { title: "Ödemeler · Yönetim" };
 
@@ -11,5 +11,5 @@ export default async function AdminPayoutsPage() {
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
-  return <PayoutsManager payouts={(data ?? []) as never} />;
+  return <PayoutsManager payouts={(data ?? []) as unknown as Payout[]} />;
 }

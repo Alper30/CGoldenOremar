@@ -9,6 +9,7 @@ type Settings = {
   commission_rate: number;
   escrow_auto_confirm_days: number;
   free_shipping_threshold: number;
+  shipping_fee: number;
 };
 
 export function SettingsForm({ settings }: { settings: Settings }) {
@@ -19,6 +20,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
     commissionPct: String(Number(settings.commission_rate) * 100),
     days: String(settings.escrow_auto_confirm_days),
     freeShip: String(settings.free_shipping_threshold),
+    shipFee: String(settings.shipping_fee),
   });
 
   const upd = (k: keyof typeof form) => (v: string) =>
@@ -34,6 +36,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
         commission_rate: Number(form.commissionPct) / 100,
         escrow_auto_confirm_days: Math.round(Number(form.days)),
         free_shipping_threshold: Number(form.freeShip),
+        shipping_fee: Number(form.shipFee),
       })
       .eq("id", true);
     setBusy(false);
@@ -50,6 +53,7 @@ export function SettingsForm({ settings }: { settings: Settings }) {
           <In label={t("adCommissionRate")} value={form.commissionPct} onChange={upd("commissionPct")} />
           <In label={t("adEscrowDays")} value={form.days} onChange={upd("days")} />
           <In label={t("adFreeShip")} value={form.freeShip} onChange={upd("freeShip")} />
+          <In label={t("adShipFee")} value={form.shipFee} onChange={upd("shipFee")} />
         </div>
         <button
           type="submit"

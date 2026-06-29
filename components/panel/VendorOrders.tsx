@@ -6,7 +6,7 @@ import { useStore } from "../store";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { fmtPrice } from "@/lib/data";
 
-type OV = {
+export type OV = {
   id: string;
   escrow_status: string;
   items_subtotal: number;
