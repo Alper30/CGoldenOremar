@@ -117,6 +117,23 @@ html {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* Güven rozetleri — kesintisiz soldan-sağa kayan şerit (marquee).
+   İki kopya yan yana; -50% → 0 arası kayınca dikişsiz döngü oluşur. */
+@keyframes trust-marquee {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.animate-trust-marquee {
+  animation: trust-marquee 40s linear infinite;
+  will-change: transform;
+}
+/* Hareketi azalt tercihi: animasyonu durdur (erişilebilirlik) */
+@media (prefers-reduced-motion: reduce) {
+  .animate-trust-marquee {
+    animation: none;
+  }
+}
+
 /* Yumuşak görünme animasyonu (abartısız) */
 @keyframes oremar-rise {
   from { opacity: 0; transform: translateY(12px); }
