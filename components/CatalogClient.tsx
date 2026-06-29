@@ -89,8 +89,8 @@ export function CatalogClient() {
         />
       </div>
 
-      {/* Kategori filtreleri */}
-      <div className="mt-5 flex flex-wrap gap-2">
+      {/* Kategori filtreleri — mobilde tek satır yatay kaydırma, sm+ sarar */}
+      <div className="no-scrollbar -mx-4 mt-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         <Chip active={!cat} onClick={() => setCat(null)}>
           {t("all")}
         </Chip>
@@ -103,8 +103,8 @@ export function CatalogClient() {
 
       {/* Rozet + sıralama */}
       <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="w-full text-xs font-semibold text-muted sm:w-auto">{t("filterTag")}</span>
+        <div className="no-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+          <span className="shrink-0 whitespace-nowrap text-xs font-semibold text-muted">{t("filterTag")}</span>
           <Chip small active={!badge} onClick={() => setBadge(null)}>
             {t("filterAll")}
           </Chip>
@@ -163,7 +163,7 @@ function Chip({
   return (
     <button
       onClick={onClick}
-      className={`rounded-full font-medium transition-colors ${
+      className={`shrink-0 whitespace-nowrap rounded-full font-medium transition-colors ${
         small ? "px-3 py-1.5 text-xs" : "px-4 py-2 text-sm"
       } ${
         active

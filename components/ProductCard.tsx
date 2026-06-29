@@ -98,9 +98,9 @@ export function ProductCard({ product }: { product: Product }) {
           </div>
           <button
             onClick={onAdd}
-            className="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-2 text-xs font-semibold text-cream transition-colors hover:bg-gold-deep"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold px-3.5 py-2 text-xs font-semibold text-cream transition-colors hover:bg-gold-deep"
           >
-            <CartIcon className="h-4 w-4" />
+            <CartIcon className="h-4 w-4 shrink-0" />
             {t("addToCart")}
           </button>
         </div>

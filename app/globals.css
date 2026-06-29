@@ -35,6 +35,22 @@
   --foreground: var(--color-ink);
 }
 
+/* Yatay taşma koruması — clip, sticky header'ı bozmaz (hidden bozardı) */
+html {
+  overflow-x: clip;
+}
+
+/* Yatay kaydırılabilir şeritler (rozet carousel, filtre çipleri) için:
+   scrollbar gizli + momentum'lu dokunmatik kaydırma */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @layer base {
   body {
     background: var(--color-cream);

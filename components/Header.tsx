@@ -33,6 +33,15 @@ export function Header() {
     return () => clearInterval(tm);
   }, [announcements.length]);
 
+  // Mobil menü açıkken arka plan kaydırmasını kilitle
+  useEffect(() => {
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   const badge = (n: number, color: string) =>
     hydrated && n > 0 ? (
       <span
@@ -43,7 +52,7 @@ export function Header() {
     ) : null;
 
   return (
-    <header className="sticky top-0 z-50 bg-cream/90 backdrop-blur">
+    <header className="sticky top-0 z-50 bg-cream/90 shadow-sm backdrop-blur">
       {/* Üst duyuru çubuğu — dönen kampanyalar */}
       <div className="overflow-hidden bg-amber-bg text-center text-xs font-medium text-gold-deep">
         <p key={annIdx} className="rise py-1.5">
@@ -53,7 +62,18 @@ export function Header() {
 
       {/* Ana satır */}
       <div className="border-b border-line">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
+          {/* Hamburger — mobilde en solda */}
+          <button
+            className="-ml-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-forest transition-colors hover:bg-canvas md:hidden"
+            aria-label="Menü"
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <MenuIcon className="h-6 w-6" />
+          </button>
+
+          {/* Logo — hamburgerin sağında */}
           <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-forest font-display text-sm font-semibold text-cream">
               GO
@@ -66,22 +86,13 @@ export function Header() {
             </span>
           </Link>
 
-          <button
-            className="-ml-0.5 rounded-full p-2 text-forest transition-colors hover:bg-canvas md:hidden"
-            aria-label="Menü"
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
-          >
-            <MenuIcon className="h-6 w-6" />
-          </button>
-
-          {/* Canlı arama */}
-          <div className="ml-2 hidden flex-1 md:block">
+          {/* Canlı arama — ortada, kalan boşluğu doldurur */}
+          <div className="ml-1 min-w-0 flex-1 sm:ml-2">
             <SearchBox placeholder={t("searchPlaceholder")} />
           </div>
 
-          {/* Aksiyonlar */}
-          <div className="ml-auto flex items-center gap-1">
+          {/* Aksiyonlar — en sağda */}
+          <div className="flex shrink-0 items-center gap-1">
             <div className="hidden items-center rounded-full border border-line p-0.5 text-xs font-semibold sm:flex">
               {(["tr", "ku"] as Lang[]).map((l) => (
                 <button
@@ -99,7 +110,7 @@ export function Header() {
             <Link
               href="/favoriler"
               aria-label={t("navFavorites")}
-              className="relative rounded-full p-2.5 text-forest transition-colors hover:bg-canvas"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full text-forest transition-colors hover:bg-canvas"
             >
               <HeartIcon className="h-5 w-5" />
               {badge(favCount, "bg-gold")}
@@ -107,20 +118,18 @@ export function Header() {
             <button
               onClick={() => setCartOpen(true)}
               aria-label={t("cartTitle")}
-              className="relative rounded-full p-2.5 text-forest transition-colors hover:bg-canvas"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full text-forest transition-colors hover:bg-canvas"
             >
               <CartIcon className="h-5 w-5" />
               {badge(cartCount, "bg-red-600")}
             </button>
 
-            <AccountMenu />
+            {/* Hesap menüsü mobilde gizli — hamburger içinden erişilir */}
+            <div className="hidden sm:flex">
+              <AccountMenu />
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Mobil arama satırı — PC'deki gibi başlıkta arama */}
-      <div className="border-b border-line px-4 py-2.5 md:hidden">
-        <SearchBox placeholder={t("searchPlaceholder")} />
       </div>
 
       {/* Kategori nav satırı */}
@@ -163,9 +172,18 @@ export function Header() {
         </div>
       </div>
 
+      {/* Karartma overlay — menü dışına dokununca kapanır */}
+      {open && (
+        <div
+          className="fixed inset-0 z-40 bg-forest-deep/40 md:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden
+        />
+      )}
+
       {/* Mobil menü */}
       {open && (
-        <nav className="max-h-[calc(100dvh-7rem)] overflow-y-auto border-b border-line bg-cream px-4 py-4 md:hidden">
+        <nav className="relative z-50 max-h-[calc(100dvh-7rem)] overflow-y-auto border-b border-line bg-cream px-4 py-4 md:hidden">
           {/* Kategoriler */}
           <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-gold">
             {t("navSecCategories")}
