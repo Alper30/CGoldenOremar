@@ -1,6 +1,13 @@
 import { cache } from "react";
-import { supabase } from "./supabase";
+import { supabase, supabaseConfigured } from "./supabase";
 import type { Category, Producer, Product, Review } from "./types";
+
+const EMPTY_CATALOG: CatalogData = {
+  categories: [],
+  producers: [],
+  products: [],
+  reviews: [],
+};
 
 // Anasayfada "öne çıkan ürünler" için sabit seçki (eski lib/data davranışı).
 const FEATURED_SLUGS = [
@@ -33,6 +40,18 @@ const fmtReviewDate = (iso: string) =>
  * Sadece sunucuda çağrılır; client tarafı veriyi CatalogProvider'dan alır.
  */
 export const fetchCatalogData = cache(async (): Promise<CatalogData> => {
+  // Ortam yapılandırılmamışsa (örn. Vercel'de env eksik) boş katalog döndür —
+  // root layout bu fonksiyonu await ettiğinden, hata fırlatmak tüm siteyi düşürür.
+  if (!supabaseConfigured) return EMPTY_CATALOG;
+  try {
+    return await loadCatalog();
+  } catch (e) {
+    console.error("[catalog] yüklenemedi, boş katalog dönülüyor:", e);
+    return EMPTY_CATALOG;
+  }
+});
+
+async function loadCatalog(): Promise<CatalogData> {
   const [catsRes, vendsRes, prodsRes, revsRes] = await Promise.all([
     supabase.from("categories").select("*").order("sort_order"),
     supabase.from("vendor_profiles").select("*"),
@@ -116,7 +135,7 @@ export const fetchCatalogData = cache(async (): Promise<CatalogData> => {
   }));
 
   return { categories, producers, products, reviews };
-});
+}
 
 /**
  * Katalog dizilerinden saf yardımcılar üretir — eski lib/data API'siyle aynı.
