@@ -53,16 +53,8 @@ export function Header() {
 
       {/* Ana satır */}
       <div className="border-b border-line">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-          <button
-            className="md:hidden"
-            aria-label="Menü"
-            onClick={() => setOpen((o) => !o)}
-          >
-            <MenuIcon className="h-6 w-6 text-forest" />
-          </button>
-
-          <Link href="/" className="flex items-center gap-2.5">
+        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-forest font-display text-sm font-semibold text-cream">
               GO
             </span>
@@ -73,6 +65,15 @@ export function Header() {
               <span className="text-[11px] text-muted">{t("brandTag")}</span>
             </span>
           </Link>
+
+          <button
+            className="-ml-0.5 rounded-full p-2 text-forest transition-colors hover:bg-canvas md:hidden"
+            aria-label="Menü"
+            aria-expanded={open}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <MenuIcon className="h-6 w-6" />
+          </button>
 
           {/* Canlı arama */}
           <div className="ml-2 hidden flex-1 md:block">
@@ -117,6 +118,11 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobil arama satırı — PC'deki gibi başlıkta arama */}
+      <div className="border-b border-line px-4 py-2.5 md:hidden">
+        <SearchBox placeholder={t("searchPlaceholder")} />
+      </div>
+
       {/* Kategori nav satırı */}
       <div className="border-b border-line bg-cream/90">
         <div className="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
@@ -159,17 +165,102 @@ export function Header() {
 
       {/* Mobil menü */}
       {open && (
-        <nav className="border-b border-line bg-cream px-4 py-3 md:hidden">
-          <div className="mb-3">
-            <SearchBox placeholder={t("searchPlaceholder")} onNavigate={() => setOpen(false)} />
+        <nav className="max-h-[calc(100dvh-7rem)] overflow-y-auto border-b border-line bg-cream px-4 py-4 md:hidden">
+          {/* Kategoriler */}
+          <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-gold">
+            {t("navSecCategories")}
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {categories.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/urunler?kategori=${c.slug}`}
+                onClick={() => setOpen(false)}
+                className="rounded-xl border border-line bg-card px-3 py-2.5 text-sm font-medium text-forest-deep transition-colors hover:border-gold/50 hover:text-gold"
+              >
+                {t(catNameKey[c.slug])}
+              </Link>
+            ))}
           </div>
-          {/* Dil (mobil) */}
-          <div className="mb-2 flex items-center gap-2">
+
+          {/* Keşfet */}
+          <p className="mb-2.5 mt-5 text-xs font-semibold uppercase tracking-wider text-gold">
+            {t("navSecExplore")}
+          </p>
+          <Link
+            href="/siparis-takip"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 rounded-xl border border-line bg-card px-3 py-3 text-sm font-semibold text-forest-deep"
+          >
+            <TruckIcon className="h-5 w-5 text-gold" />
+            {t("navTracking")}
+          </Link>
+          <div className="mt-1 grid grid-cols-1 divide-y divide-line">
+            {[
+              { href: "/favoriler", label: t("navFavorites") },
+              { href: "/hakkimizda", label: t("navAbout") },
+              { href: "/nasil-calisir", label: t("navHow") },
+              { href: "/iletisim", label: t("navContact") },
+              { href: "/randevu", label: t("navBooking") },
+            ].map((it) => (
+              <Link
+                key={it.href}
+                href={it.href}
+                onClick={() => setOpen(false)}
+                className="py-2.5 text-sm font-semibold text-forest transition-colors hover:text-gold"
+              >
+                {it.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Hesap + dil */}
+          <p className="mb-2.5 mt-5 text-xs font-semibold uppercase tracking-wider text-gold">
+            {t("navSecAccount")}
+          </p>
+          {signedIn ? (
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/hesabim"
+                onClick={() => setOpen(false)}
+                className="rounded-xl border border-line bg-card px-3 py-2.5 text-sm font-semibold text-forest-deep"
+              >
+                {t("navAccount")}
+              </Link>
+              <form action={logoutAction}>
+                <button
+                  type="submit"
+                  className="w-full rounded-xl border border-line bg-card px-3 py-2.5 text-left text-sm font-semibold text-red-600"
+                >
+                  {t("navLogout")}
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <Link
+                href="/giris"
+                onClick={() => setOpen(false)}
+                className="rounded-xl border border-line bg-card px-3 py-2.5 text-center text-sm font-semibold text-forest-deep"
+              >
+                {t("navLogin")}
+              </Link>
+              <Link
+                href="/kayit"
+                onClick={() => setOpen(false)}
+                className="rounded-full bg-gold px-4 py-2.5 text-center text-sm font-semibold text-cream"
+              >
+                {t("navSell")}
+              </Link>
+            </div>
+          )}
+
+          <div className="mt-4 flex items-center gap-2 border-t border-line pt-4">
             {(["tr", "ku"] as Lang[]).map((l) => (
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase ${
+                className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold uppercase ${
                   lang === l ? "border-forest bg-forest text-cream" : "border-line text-muted"
                 }`}
               >
@@ -177,65 +268,6 @@ export function Header() {
               </button>
             ))}
           </div>
-          {categories.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/urunler?kategori=${c.slug}`}
-              onClick={() => setOpen(false)}
-              className="block py-2.5 text-sm font-medium text-ink/80"
-            >
-              {t(catNameKey[c.slug])}
-            </Link>
-          ))}
-
-          <Link
-            href="/siparis-takip"
-            onClick={() => setOpen(false)}
-            className="mt-2 flex items-center gap-2 rounded-xl border border-line bg-card px-3 py-3 text-sm font-semibold text-forest-deep"
-          >
-            <TruckIcon className="h-5 w-5 text-gold" />
-            {t("navTracking")}
-          </Link>
-
-          <div className="mt-2 border-t border-line pt-1" />
-          <Link href="/favoriler" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-            {t("navFavorites")}
-          </Link>
-          <Link href="/hakkimizda" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-            {t("navAbout")}
-          </Link>
-          <Link href="/nasil-calisir" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-            {t("navHow")}
-          </Link>
-          <Link href="/iletisim" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-            {t("navContact")}
-          </Link>
-          <Link href="/randevu" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-gold-deep">
-            {t("navBooking")}
-          </Link>
-
-          <div className="mt-2 border-t border-line pt-2" />
-          {signedIn ? (
-            <>
-              <Link href="/hesabim" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-                {t("navAccount")}
-              </Link>
-              <form action={logoutAction}>
-                <button type="submit" className="block w-full py-2.5 text-left text-sm font-semibold text-red-600">
-                  {t("navLogout")}
-                </button>
-              </form>
-            </>
-          ) : (
-            <>
-              <Link href="/giris" onClick={() => setOpen(false)} className="block py-2.5 text-sm font-semibold text-forest">
-                {t("navLogin")}
-              </Link>
-              <Link href="/kayit" onClick={() => setOpen(false)} className="mt-1 flex items-center justify-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-sm font-semibold text-cream">
-                {t("navSell")}
-              </Link>
-            </>
-          )}
         </nav>
       )}
     </header>

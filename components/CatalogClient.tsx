@@ -70,7 +70,7 @@ export function CatalogClient() {
         <p className="text-xs font-semibold uppercase tracking-wider text-gold">
           {cat ? t("categoryWord") : t("store")}
         </p>
-        <h1 className="mt-1 font-display text-4xl text-forest-deep">
+        <h1 className="mt-1 font-display text-3xl text-forest-deep sm:text-4xl">
           {cat ? t(catNameKey[cat]) : t("catalogAllTitle")}
         </h1>
         <p className="mt-2 text-muted">
@@ -102,9 +102,9 @@ export function CatalogClient() {
       </div>
 
       {/* Rozet + sıralama */}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+      <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-muted">{t("filterTag")}</span>
+          <span className="w-full text-xs font-semibold text-muted sm:w-auto">{t("filterTag")}</span>
           <Chip small active={!badge} onClick={() => setBadge(null)}>
             {t("filterAll")}
           </Chip>
@@ -114,12 +114,12 @@ export function CatalogClient() {
             </Chip>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex shrink-0 items-center gap-2 text-sm">
           <span className="text-muted">{t("sortLabel")}</span>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as Sort)}
-            className="rounded-full border border-line bg-card px-3 py-2 text-sm font-medium text-forest outline-none focus:border-gold"
+            className="flex-1 rounded-full border border-line bg-card px-3 py-2 text-sm font-medium text-forest outline-none focus:border-gold sm:flex-none"
           >
             {(Object.keys(sortKey) as Sort[]).map((s) => (
               <option key={s} value={s}>
