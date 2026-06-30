@@ -11,6 +11,9 @@ export function useAdminDashboard(range: DateRangeKey) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // range değişince yükleme durumunu sıfırla + RPC'yi yeniden çağır; setState
+  // burada bilinçli (harici veriyle senkron) → projenin mount/fetch deseni.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     let active = true;
     setLoading(true);
@@ -31,6 +34,7 @@ export function useAdminDashboard(range: DateRangeKey) {
       active = false;
     };
   }, [range]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return { data, loading };
 }

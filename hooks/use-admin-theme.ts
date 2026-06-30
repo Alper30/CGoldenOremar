@@ -15,8 +15,10 @@ export function useAdminTheme() {
   const [theme, setThemeState] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
+  // Mount'ta localStorage tercihini DOM'a senkronlar; setState burada bilinçli
+  // (SSR varsayılanı koyu, hidrasyon sonrası tercih uygulanır → mismatch önlenir).
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    // Kayıtlı tercihi geri yükle (SSR varsayılanı koyu); yoksa koyu kalır.
     let saved: string | null = null;
     try {
       saved = localStorage.getItem(STORAGE_KEY);
@@ -29,6 +31,7 @@ export function useAdminTheme() {
     setThemeState(next);
     setMounted(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const applyTheme = useCallback((next: Theme) => {
     const el = root();
