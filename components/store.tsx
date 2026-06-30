@@ -5,9 +5,12 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { dicts, tr, type Lang } from "@/lib/i18n";
+import { useAuth } from "./AuthProvider";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export type CartItem = { slug: string; qty: number };
 type Toast = { id: number; msg: string };
@@ -46,8 +49,15 @@ export function useStore() {
 }
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
+  const { userId } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favs, setFavs] = useState<string[]>([]);
+  // Favori senkronunda bayat closure'dan kaçınmak için son favori listesini ref'te tut.
+  // Ref render'da değil effect'te güncellenir (event handler'lar commit sonrası okur).
+  const favsRef = useRef<string[]>([]);
+  useEffect(() => {
+    favsRef.current = favs;
+  }, [favs]);
   const [cartOpen, setCartOpen] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [hydrated, setHydrated] = useState(false);
@@ -90,6 +100,31 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (hydrated) localStorage.setItem("go_favs", JSON.stringify(favs));
   }, [favs, hydrated]);
 
+  // Giriş yapınca: DB favorilerini yükle + yerel (localStorage) favorileri DB'ye
+  // taşı (merge). Böylece favoriler kalıcı ve cihazlar arası senkron olur.
+  useEffect(() => {
+    if (!hydrated || !userId) return;
+    let alive = true;
+    (async () => {
+      const supabase = createSupabaseBrowserClient();
+      const { data } = await supabase.from("favorites").select("product_slug");
+      if (!alive) return;
+      const dbSlugs = (data ?? []).map((r) => r.product_slug);
+      const local = favsRef.current;
+      const toInsert = local.filter((s) => !dbSlugs.includes(s));
+      if (toInsert.length) {
+        await supabase
+          .from("favorites")
+          .upsert(toInsert.map((slug) => ({ user_id: userId, product_slug: slug })));
+      }
+      if (!alive) return;
+      setFavs(Array.from(new Set([...local, ...dbSlugs])));
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [hydrated, userId]);
+
   const toast = useCallback((msg: string) => {
     const id = Date.now() + Math.random();
     setToasts((t) => [...t, { id, msg }]);
@@ -121,9 +156,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const clearCart = useCallback(() => setCart([]), []);
 
   const toggleFav = useCallback(
-    (slug: string) =>
-      setFavs((f) => (f.includes(slug) ? f.filter((s) => s !== slug) : [...f, slug])),
-    [],
+    (slug: string) => {
+      const has = favsRef.current.includes(slug);
+      setFavs((f) =>
+        has ? f.filter((s) => s !== slug) : f.includes(slug) ? f : [...f, slug],
+      );
+      // Girişliyse DB'ye yaz (upsert/delete idempotent → strict-mode çift çağrısı güvenli).
+      if (userId) {
+        const supabase = createSupabaseBrowserClient();
+        if (has) {
+          supabase
+            .from("favorites")
+            .delete()
+            .eq("user_id", userId)
+            .eq("product_slug", slug)
+            .then(() => {});
+        } else {
+          supabase
+            .from("favorites")
+            .upsert({ user_id: userId, product_slug: slug })
+            .then(() => {});
+        }
+      }
+    },
+    [userId],
   );
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);

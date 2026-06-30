@@ -5,6 +5,7 @@ import { fetchCatalogData, buildHelpers } from "@/lib/queries";
 import { StarRating } from "@/components/StarRating";
 import { ProducerTrustCard } from "@/components/ProducerTrustCard";
 import { ReviewList } from "@/components/ReviewList";
+import { ReviewForm } from "@/components/ReviewForm";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductGallery } from "@/components/ProductGallery";
 import { AddToCart } from "@/components/AddToCart";
@@ -140,7 +141,8 @@ export default async function ProductPage({
         <h2 className="font-display text-2xl text-forest-deep">
           Değerlendirmeler ({product.reviewCount})
         </h2>
-        <div className="mt-5 max-w-3xl">
+        <div className="mt-5 max-w-3xl space-y-6">
+          <ReviewForm productSlug={product.slug} />
           <ReviewList reviews={product.reviews ?? []} />
         </div>
       </section>

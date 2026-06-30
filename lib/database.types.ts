@@ -47,6 +47,32 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          created_at: string
+          product_slug: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          product_slug: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          product_slug?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_product_slug_fkey"
+            columns: ["product_slug"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           created_at: string
@@ -669,6 +695,7 @@ export type Database = {
     }
     Functions: {
       admin_dashboard: { Args: { p_days?: number }; Returns: Json }
+      admin_delete_review: { Args: { p_id: string }; Returns: undefined }
       admin_stats: { Args: never; Returns: Json }
       approve_vendor_application: {
         Args: { p_app_id: string }
@@ -705,6 +732,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      my_review: { Args: { p_product_slug: string }; Returns: Json }
       open_dispute: { Args: { p_order_vendor_id: string }; Returns: undefined }
       reject_vendor_application: {
         Args: { p_app_id: string; p_reason: string }
@@ -713,6 +741,10 @@ export type Database = {
       request_payout: { Args: { p_amount: number }; Returns: string }
       resolve_dispute: {
         Args: { p_action: string; p_order_vendor_id: string }
+        Returns: undefined
+      }
+      submit_review: {
+        Args: { p_product_slug: string; p_rating: number; p_text: string }
         Returns: undefined
       }
       update_vendor_profile: { Args: { p_patch: Json }; Returns: undefined }
