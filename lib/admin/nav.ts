@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Bell,
   ScrollText,
+  UserPlus,
 } from "lucide-react";
 
 export interface NavItem {
@@ -40,6 +41,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Operasyon",
     items: [
       { key: "applications", label: "Satıcı Başvuruları", href: "/admin/basvurular", icon: FileCheck2, badgeKey: "pending_applications" },
+      { key: "assisted", label: "Üretici Ekle (Yardımlı)", href: "/admin/uretici-ekle", icon: UserPlus },
       { key: "moderation", label: "Ürün Moderasyonu", href: "/admin/urunler", icon: PackageSearch, badgeKey: "pending_products" },
       { key: "orders", label: "Siparişler", href: "/admin/siparisler", icon: ShoppingCart },
       { key: "vendors", label: "Satıcılar", href: "/admin/saticilar", icon: Store },
