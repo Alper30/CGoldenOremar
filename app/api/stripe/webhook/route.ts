@@ -41,6 +41,17 @@ export async function POST(req: NextRequest) {
         console.error("[stripe-webhook] SERVICE_ROLE yok; finalize atlandı:", orderId);
         return NextResponse.json({ error: "Sunucu yapılandırması eksik" }, { status: 500 });
       }
+      // Savunma derinliği: tutar siparişin grand_total'ı ile eşleşmeli (intent
+      // oluştururken bağlanır + imza doğrulanır, yine de burada bir kez daha doğrula).
+      const { data: ord } = await admin
+        .from("orders")
+        .select("grand_total")
+        .eq("id", orderId)
+        .single();
+      if (ord && pi.amount !== Math.round(Number(ord.grand_total) * 100)) {
+        console.error("[stripe-webhook] tutar uyuşmuyor; finalize atlandı:", orderId);
+        return NextResponse.json({ error: "Tutar uyuşmuyor" }, { status: 400 });
+      }
       const { error } = await admin.rpc("finalize_order_payment", {
         p_order_id: orderId,
         p_provider: "stripe",

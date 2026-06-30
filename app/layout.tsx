@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { WhatsAppWidget } from "@/components/WhatsAppWidget";
+import { SiteChrome } from "@/components/SiteChrome";
 import { StoreProvider } from "@/components/store";
 import { CatalogProvider } from "@/components/CatalogProvider";
 import { AuthProvider } from "@/components/AuthProvider";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Toaster } from "@/components/Toaster";
 import { fetchCatalogData } from "@/lib/queries";
 import { getAuthSnapshot } from "@/lib/auth";
@@ -46,12 +43,8 @@ export default async function RootLayout({
         <CatalogProvider data={catalog}>
           <AuthProvider initial={auth}>
             <StoreProvider>
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-              <CartDrawer />
+              <SiteChrome>{children}</SiteChrome>
               <Toaster />
-              <WhatsAppWidget />
             </StoreProvider>
           </AuthProvider>
         </CatalogProvider>
