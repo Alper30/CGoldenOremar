@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useAdminDashboard } from "@/hooks/use-admin-dashboard";
-import type { DateRangeKey } from "@/lib/admin/types";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import type { DashboardData, DateRangeKey } from "@/lib/admin/types";
 import { RANGE_LABELS } from "@/lib/admin/format";
 import { DateRangePicker } from "./date-range-picker";
 import { DashboardSkeleton } from "./dashboard-skeleton";
@@ -11,9 +11,24 @@ import { CommissionLineChart, OrderBarChart, RevenueAreaChart } from "./trend-ch
 import { CategoryDonut, OrderStatusDonut } from "./distribution-charts";
 import { ActivityFeed, CityDistributionList, TopProducts, TopVendors } from "./dashboard-lists";
 
-export function Dashboard() {
-  const [range, setRange] = useState<DateRangeKey>("30d");
-  const { data, loading, error, retry } = useAdminDashboard(range);
+// Veri sunucudan prop olarak gelir (app/admin/page.tsx). Aralık değişince URL
+// query'sini güncelleyip sunucuyu yeniden çalıştırırız (useTransition → geçişte
+// skeleton). Tarayıcı Supabase istemcisi kullanılmaz.
+export function Dashboard({
+  data,
+  range,
+  error,
+}: {
+  data: DashboardData | null;
+  range: DateRangeKey;
+  error: string | null;
+}) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+
+  function setRange(next: DateRangeKey) {
+    startTransition(() => router.push(`/admin?g=${next}`, { scroll: false }));
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,7 +39,7 @@ export function Dashboard() {
         <DateRangePicker value={range} onChange={setRange} />
       </div>
 
-      {error && !loading ? (
+      {error && !pending ? (
         <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center">
           <p className="text-sm font-medium text-destructive">
             Gösterge paneli verisi yüklenemedi
@@ -32,13 +47,13 @@ export function Dashboard() {
           <p className="mt-1 text-xs text-muted-foreground">{error}</p>
           <button
             type="button"
-            onClick={retry}
+            onClick={() => startTransition(() => router.refresh())}
             className="mt-4 inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted"
           >
             Tekrar dene
           </button>
         </div>
-      ) : loading || !data ? (
+      ) : pending || !data ? (
         <DashboardSkeleton />
       ) : (
         <>

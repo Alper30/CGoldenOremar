@@ -8,7 +8,7 @@ export default async function Page() {
   // RLS: product_reviews herkese okunur → admin tüm yorumları görür.
   const { data } = await supabase
     .from("product_reviews")
-    .select("id, author, location, rating, text, created_at, products(name, slug)")
+    .select("id, author, location, rating, text, created_at, products(name, slug, image)")
     .order("created_at", { ascending: false })
     .limit(300);
 

@@ -11,20 +11,16 @@
 */
 
 @theme {
-  /* Renkler */
+  /* Statik marka renkleri (public + admin ortak, override edilmez). */
   --color-cream: #faf7f0; /* ana zemin */
   --color-canvas: #f2ecdf; /* bölüm zemini */
-  --color-card: var(--card); /* :root=public yüzey; .admin-scope override eder */
   --color-forest: #2e3a2b; /* birincil koyu */
   --color-forest-deep: #1f271c;
-  --color-gold: var(--gold); /* :root=public CTA; .admin-scope override eder */
   --color-gold-deep: #8a6114; /* CTA hover */
   --color-gold-soft: #d8b25e;
   --color-amber-bg: #f4e8cd; /* duyuru çubuğu / ikon kutusu */
   --color-ink: #1e1b16; /* metin */
-  --color-muted: var(--muted); /* :root=public ikincil metin; admin=yüzey */
   --color-line: #e6decf; /* ince çizgi */
-  --color-success: var(--success);
 
   /* Tipografi */
   --font-display: var(--font-fraunces);
@@ -35,8 +31,18 @@
 }
 
 /* ===== Admin paneli (shadcn) ek token eşlemeleri — yeni utility'ler =====
-   Public sitede kullanılmıyor; değerleri .admin-scope içinde tanımlı. */
-@theme {
+   Public sitede kullanılmıyor; değerleri .admin-scope içinde tanımlı.
+   `inline` ZORUNLU: utility'ler --color-* ara değişkeni yerine doğrudan
+   var(--X)'i referanslar → .admin-scope runtime override'ı çözülür. Aksi halde
+   :root fallback'i olmayan tokenlar (primary, sidebar, ring, accent...) çalışmaz. */
+@theme inline {
+  /* Public :root + admin .admin-scope(.dark) ikisinde de override edilir → inline
+     olmalı ki utility element seviyesinde doğru değeri çözsün (koyu modda kart/
+     yüzey renkleri :root'a sabitlenmesin). */
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-muted: var(--muted);
+  --color-success: var(--success);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card-foreground: var(--card-foreground);
@@ -225,6 +231,7 @@ html {
     color: var(--color-forest-deep);
   }
 }
+
 
 /* Yardımcı: ince üst-çizgi ayraç */
 .hairline {

@@ -1,12 +1,43 @@
 import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "../database.types";
 
+type BrowserClient = ReturnType<typeof createBrowserClient<Database>>;
+
 // Tarayıcı (client component) istemcisi. Oturum çerezini localStorage yerine
 // cookie üzerinden taşır; böylece sunucu da aynı oturumu görür.
-export function createSupabaseBrowserClient() {
+//
+// GLOBAL SINGLETON: her çağrıda yeni client üretmek birden fazla GoTrueClient
+// örneği yaratıyordu → aynı auth-token storage anahtarında Web Locks çekişmesi →
+// .rpc()/sorgu çağrıları sonsuza dek asılı kalıp (admin dashboard sonsuz
+// skeleton) oluyordu. Modül-düzeyi `let` yetmez: dev/prod bundle'da bu modül
+// birden çok chunk'a kopyalanabildiği için her kopya kendi örneğini alıyordu.
+// Bu yüzden örneği globalThis üzerinde tutuyoruz → sayfada TEK client garanti.
+const GLOBAL_KEY = "__goBrowserSupabase__";
+
+function makeClient(): BrowserClient {
   return createBrowserClient<Database>(
     // `.invalid` (RFC 2606) çözümlenemez → env yokken kimlik bilgisi dışarı sızmaz.
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.invalid",
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "invalid-anon-key",
+    {
+      auth: {
+        // supabase-js her REST isteğinden önce erişim token'ını getSession() ile
+        // alır; bu navigator Web Locks kilidini edinir. @supabase/ssr + Next.js'te
+        // bu kilit deadlock'a girip TÜM sorguları fetch öncesi askıya alabiliyor
+        // (admin dashboard sonsuz skeleton). No-op lock: gerçek kilit almadan
+        // fonksiyonu çalıştırır → deadlock engellenir. Çok-sekmeli token yenileme
+        // koordinasyonu gevşer ama işlevsel etki yok.
+        lock: async (_name, _acquireTimeout, fn) => fn(),
+      },
+    },
   );
+}
+
+export function createSupabaseBrowserClient(): BrowserClient {
+  // Sunucuda (SSR) global paylaşımı istemeyiz; her çağrıda yenisi güvenli.
+  if (typeof window === "undefined") return makeClient();
+
+  const g = globalThis as typeof globalThis & { [GLOBAL_KEY]?: BrowserClient };
+  if (!g[GLOBAL_KEY]) g[GLOBAL_KEY] = makeClient();
+  return g[GLOBAL_KEY];
 }

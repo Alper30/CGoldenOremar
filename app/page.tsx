@@ -8,7 +8,6 @@ import { CategoryGrid } from "@/components/CategoryGrid";
 import { ProductCard } from "@/components/ProductCard";
 import { FeaturedProducers } from "@/components/FeaturedProducers";
 import { Newsletter } from "@/components/Newsletter";
-import { StarRating } from "@/components/StarRating";
 import { useCatalog } from "@/components/CatalogProvider";
 import { useStore } from "@/components/store";
 import { ArrowRightIcon, VerifiedIcon } from "@/components/icons";
@@ -52,7 +51,7 @@ function SectionHead({
 
 export default function HomePage() {
   const { t } = useStore();
-  const { featuredProducts, reviews } = useCatalog();
+  const { featuredProducts } = useCatalog();
   const featured = featuredProducts();
 
   return (
@@ -156,25 +155,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Yorumlar */}
-      <section className="mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8 lg:pt-28">
-        <SectionHead eyebrow={t("reviewsEyebrow")} title={t("reviewsTitle")} />
-        <div className="grid gap-5 md:grid-cols-3">
-          {reviews.map((r, i) => (
-            <div key={i} className="rounded-2xl border border-line bg-card p-6">
-              <StarRating rating={r.rating} size="md" />
-              <p className="mt-3 leading-relaxed text-ink/90">“{r.text}”</p>
-              <div className="mt-4 border-t border-line pt-4">
-                <p className="text-sm font-semibold text-forest-deep">{r.author}</p>
-                <p className="text-xs text-muted">
-                  {r.location}
-                  {r.product ? ` · ${r.product}` : ""}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Müşteri yorumları ana sayfadan kaldırıldı → ürünler alanına (CatalogClient)
+          otomatik kaydıraklı ReviewCarousel olarak taşındı. */}
 
       <section className="mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8 lg:pt-28">
         <Newsletter />

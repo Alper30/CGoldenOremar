@@ -6,6 +6,7 @@ import { catNameKey, catDescKey, badgeKey } from "@/lib/i18n";
 import { useStore } from "./store";
 import { useCatalog } from "./CatalogProvider";
 import { ProductCard } from "./ProductCard";
+import { ReviewCarousel } from "./ReviewCarousel";
 import { SearchIcon } from "./icons";
 
 const norm = (s: string) =>
@@ -25,7 +26,7 @@ const badges = ["Organik", "Katkısız", "Doğal", "Şeker İlavesiz"];
 export function CatalogClient() {
   const sp = useSearchParams();
   const { t } = useStore();
-  const { products, categories, getCategory } = useCatalog();
+  const { products, categories, getCategory, reviews } = useCatalog();
   const initialCat = sp.get("kategori");
   const initialAra = sp.get("ara") ?? "";
 
@@ -65,6 +66,7 @@ export function CatalogClient() {
   }, [products, cat, q, sort, badge]);
 
   return (
+    <>
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
       <header className="max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-wider text-gold">
@@ -146,6 +148,13 @@ export function CatalogClient() {
         </div>
       )}
     </div>
+
+      <ReviewCarousel
+        reviews={reviews}
+        eyebrow={t("reviewsEyebrow")}
+        title={t("reviewsTitle")}
+      />
+    </>
   );
 }
 
