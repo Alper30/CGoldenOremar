@@ -52,5 +52,7 @@ export type Product = {
   tags: string[]; // ek etiketler
   coldChain?: boolean;
   description: string;
+  story?: string; // üretici ağzından ürün hikâyesi
+  features?: string[]; // öne çıkan özellikler / seçenekler
   reviews?: Review[];
 };

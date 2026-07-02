@@ -411,6 +411,8 @@ export type Database = {
           slug: string
           status: string
           stock: number | null
+          story: string | null
+          features: string[]
           tags: string[]
           unit: string
           vendor_id: string
@@ -433,6 +435,8 @@ export type Database = {
           slug: string
           status?: string
           stock?: number | null
+          story?: string | null
+          features?: string[]
           tags?: string[]
           unit: string
           vendor_id: string
@@ -455,6 +459,8 @@ export type Database = {
           slug?: string
           status?: string
           stock?: number | null
+          story?: string | null
+          features?: string[]
           tags?: string[]
           unit?: string
           vendor_id?: string

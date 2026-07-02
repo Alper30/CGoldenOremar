@@ -131,6 +131,8 @@ async function loadCatalog(): Promise<CatalogData> {
     tags: p.tags,
     coldChain: p.cold_chain,
     description: p.description ?? "",
+    story: p.story ?? "",
+    features: p.features ?? [],
     reviews: reviewsByProduct.get(p.slug) ?? [],
   }));
 
