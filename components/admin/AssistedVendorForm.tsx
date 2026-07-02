@@ -32,6 +32,7 @@ export function AssistedVendorForm() {
   const { t, toast } = useStore();
   const router = useRouter();
   const [form, setForm] = useState<Form>(EMPTY);
+  const [termsOk, setTermsOk] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const upd = (k: keyof Form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -43,7 +44,7 @@ export function AssistedVendorForm() {
       const res = await fetch("/api/admin/assisted-vendor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, terms_accepted: termsOk }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -52,6 +53,7 @@ export function AssistedVendorForm() {
       }
       toast(t("avSuccess"));
       setForm(EMPTY);
+      setTermsOk(false);
       router.refresh();
     } catch {
       toast(t("coError"));
@@ -87,6 +89,17 @@ export function AssistedVendorForm() {
             onChange={(e) => upd("story")(e.target.value)}
             className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none focus:border-gold"
           />
+        </label>
+
+        <label className="mt-4 flex cursor-pointer items-start gap-2.5 rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground">
+          <input
+            type="checkbox"
+            required
+            checked={termsOk}
+            onChange={(e) => setTermsOk(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-gold"
+          />
+          <span>{t("avTerms")}</span>
         </label>
 
         <button

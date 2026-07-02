@@ -167,6 +167,7 @@ export const tr: Dict = {
   footDistance: "Mesafeli Satış Sözleşmesi",
   footPrivacy: "Gizlilik Politikası",
   footReturns: "İade & Cayma",
+  footVendorTerms: "Satıcı Sözleşmesi",
   footBrandDesc: "Hakkâri, Yüksekova, Şırnak ve çevresinin doğal ürünleri; kimliği doğrulanmış üreticilerden doğrudan sofranıza.",
   footSupport: "Türkçe & Kurmancî destek",
   footRights: "Doğal Pazar Yeri. Tüm hakları saklıdır.",
@@ -301,6 +302,10 @@ export const tr: Dict = {
   soGoPanel: "Satıcı Paneline Git",
   soLoginFirst: "Başvuru için önce giriş yap.",
   soKvkk: "Bilgilerin KVKK kapsamında güvenle saklanır; yalnız kimlik doğrulama için kullanılır.",
+  soTermsPre: "",
+  soTermsLink: "Satıcı Sözleşmesi'ni",
+  soTermsPost: " okudum ve kabul ediyorum.",
+  soTermsRequired: "Devam etmek için Satıcı Sözleşmesi'ni kabul etmelisin.",
 
   // ---- Satıcı Paneli (operatör) ----
   vpPanel: "Satıcı Paneli",
@@ -409,6 +414,8 @@ export const tr: Dict = {
   avProvince: "İl",
   avDistrict: "İlçe",
   avStory: "Üretici hikâyesi (isteğe bağlı)",
+  avTerms:
+    "Satıcı Sözleşmesi üreticiye okundu/aktarıldı ve üretici sözleşmeyi kabul etti.",
   avSubmit: "Üreticiyi Oluştur",
   avCreating: "Oluşturuluyor…",
   avSuccess: "Üretici oluşturuldu ve onaylandı.",
@@ -575,6 +582,7 @@ export const ku: Dict = {
   footDistance: "Peymana Firotina ji Dûr ve",
   footPrivacy: "Politikaya Nehêniyê",
   footReturns: "Vegerandin & Dev jê berdan",
+  footVendorTerms: "Peymana Firoşkar",
   footBrandDesc: "Hilberên xwezayî yên Hakkarî, Yüksekova, Şırnak û derdorê; rasterast ji hilberînerên nasnameya wan piştrastkirî ber bi sifreya we.",
   footSupport: "Piştgiriya Tirkî & Kurmancî",
   footRights: "Bazara Xwezayî. Hemû maf parastî ne.",
@@ -709,6 +717,10 @@ export const ku: Dict = {
   soGoPanel: "Here Panela Firoşkar",
   soLoginFirst: "Ji bo serlêdanê pêşî têkeve.",
   soKvkk: "Agahiyên te di çarçoveya KVKK de bi ewlehî têne parastin; tenê ji bo piştrastkirinê têne bikaranîn.",
+  soTermsPre: "Min ",
+  soTermsLink: "Peymana Firoşkar",
+  soTermsPost: " xwend û ez qebûl dikim.",
+  soTermsRequired: "Ji bo berdewamiyê divê tu Peymana Firoşkar qebûl bikî.",
   // Panela firoşkar (vendor panel)
   vpPanel: "Panela Firoşkar",
   vpDashboard: "Kurte",
@@ -815,6 +827,8 @@ export const ku: Dict = {
   avProvince: "Bajar",
   avDistrict: "Navçe",
   avStory: "Çîroka hilberîner (bijarte)",
+  avTerms:
+    "Peymana Firoşkar ji hilberîner re hat xwendin/ragihandin û hilberîner peyman qebûl kir.",
   avSubmit: "Hilberîner Çêbike",
   avCreating: "Tê çêkirin…",
   avSuccess: "Hilberîner hat çêkirin û erêkirin.",

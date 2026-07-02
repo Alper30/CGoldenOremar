@@ -39,6 +39,7 @@ export function VendorApplyForm({
   const [docFront, setDocFront] = useState<File | null>(null);
   const [docBack, setDocBack] = useState<File | null>(null);
   const [selfie, setSelfie] = useState<File | null>(null);
+  const [termsOk, setTermsOk] = useState(false);
 
   const upd = (k: keyof typeof form) => (v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
@@ -75,6 +76,10 @@ export function VendorApplyForm({
     e.preventDefault();
     if (!docFront || !docBack || !selfie) {
       toast(t("coError"));
+      return;
+    }
+    if (!termsOk) {
+      toast(t("soTermsRequired"));
       return;
     }
     setBusy(true);
@@ -114,6 +119,7 @@ export function VendorApplyForm({
         document_url: frontPath,
         document_back_url: backPath,
         selfie_url: selfiePath,
+        terms_accepted_at: new Date().toISOString(),
       });
       if (error) throw error;
       setSubmitted(true);
@@ -201,6 +207,27 @@ export function VendorApplyForm({
           <ShieldIcon className="mt-0.5 h-4 w-4 shrink-0" />
           {t("soKvkk")}
         </div>
+
+        <label className="mt-3 flex cursor-pointer items-start gap-2.5 rounded-2xl border border-line bg-cream/60 px-4 py-3 text-sm text-forest-deep">
+          <input
+            type="checkbox"
+            required
+            checked={termsOk}
+            onChange={(e) => setTermsOk(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-gold"
+          />
+          <span>
+            {t("soTermsPre")}
+            <Link
+              href="/satici-sozlesmesi"
+              target="_blank"
+              className="font-semibold text-forest underline underline-offset-2 hover:text-gold"
+            >
+              {t("soTermsLink")}
+            </Link>
+            {t("soTermsPost")}
+          </span>
+        </label>
 
         <button
           type="submit"

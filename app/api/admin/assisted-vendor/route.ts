@@ -61,6 +61,10 @@ export async function POST(req: NextRequest) {
   if (tcNo.length !== 11) return bad("TC kimlik no 11 haneli olmalı");
   if (!/^TR[0-9]{24}$/.test(iban)) return bad("IBAN 'TR' + 24 rakam olmalı");
   if (!phone) return bad("Telefon girin");
+  // Sözleşme onayı: operatör, üreticiden sözlü/yüz yüze kabul aldığını beyan eder.
+  if (body.terms_accepted !== true) {
+    return bad("Satıcı Sözleşmesi onayı olmadan kayıt oluşturulamaz");
+  }
 
   // 3) Auth kullanıcısı oluştur (e-posta onaylı; üretici sonra şifre sıfırlar)
   const tempPassword = crypto.randomUUID() + "Aa1!";
@@ -93,6 +97,7 @@ export async function POST(req: NextRequest) {
       district,
       story,
       status: "pending",
+      terms_accepted_at: new Date().toISOString(),
     })
     .select("id")
     .single();

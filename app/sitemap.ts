@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/kvkk`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/gizlilik-politikasi`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/mesafeli-satis-sozlesmesi`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/satici-sozlesmesi`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/iade-politikasi`, changeFrequency: "yearly", priority: 0.2 },
   ];
 

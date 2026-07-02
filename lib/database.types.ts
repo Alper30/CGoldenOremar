@@ -564,6 +564,7 @@ export type Database = {
           store_name: string
           story: string | null
           tc_no: string
+          terms_accepted_at: string | null
           user_id: string
         }
         Insert: {
@@ -584,6 +585,7 @@ export type Database = {
           store_name: string
           story?: string | null
           tc_no: string
+          terms_accepted_at?: string | null
           user_id: string
         }
         Update: {
@@ -604,6 +606,7 @@ export type Database = {
           store_name?: string
           story?: string | null
           tc_no?: string
+          terms_accepted_at?: string | null
           user_id?: string
         }
         Relationships: []

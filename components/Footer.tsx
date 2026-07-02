@@ -46,6 +46,7 @@ export function Footer() {
         { href: "/kvkk", label: t("footKvkk") },
         { href: "/gizlilik-politikasi", label: t("footPrivacy") },
         { href: "/mesafeli-satis-sozlesmesi", label: t("footDistance") },
+        { href: "/satici-sozlesmesi", label: t("footVendorTerms") },
         { href: "/iade-politikasi", label: t("footReturns") },
       ],
     },
