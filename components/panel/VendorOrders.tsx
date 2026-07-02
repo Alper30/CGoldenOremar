@@ -78,6 +78,12 @@ function Row({ ov }: { ov: OV }) {
       toast(t("coError"));
       return;
     }
+    // Alıcıya "kargoda" e-postası (best effort — başarısızlığı akışı etkilemez).
+    fetch("/api/notify/shipped", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderVendorId: ov.id }),
+    }).catch(() => {});
     toast(t("vpShipped"));
     router.refresh();
   }

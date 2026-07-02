@@ -8,6 +8,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "@/components/Toaster";
 import { fetchCatalogData } from "@/lib/queries";
 import { getAuthSnapshot } from "@/lib/auth";
+import { siteUrl } from "@/lib/site";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -22,9 +23,18 @@ const hanken = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Golden Oremar — Doğanın Kalbinden, Doğrudan Üreticiden",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Golden Oremar — Doğanın Kalbinden, Doğrudan Üreticiden",
+    template: "%s",
+  },
   description:
     "Hakkâri, Yüksekova, Şırnak ve çevresinin doğal ürünleri; kimliği doğrulanmış üreticilerden, güvenli ödeme ve soğuk zincirle kapınıza.",
+  openGraph: {
+    siteName: "Golden Oremar",
+    locale: "tr_TR",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({

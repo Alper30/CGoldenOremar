@@ -43,8 +43,10 @@ export function Footer() {
       links: [
         { href: "/hakkimizda", label: t("footAbout") },
         { href: "/iletisim", label: t("footContact") },
-        { href: "#", label: t("footKvkk") },
-        { href: "#", label: t("footDistance") },
+        { href: "/kvkk", label: t("footKvkk") },
+        { href: "/gizlilik-politikasi", label: t("footPrivacy") },
+        { href: "/mesafeli-satis-sozlesmesi", label: t("footDistance") },
+        { href: "/iade-politikasi", label: t("footReturns") },
       ],
     },
   ];

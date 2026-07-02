@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { notifyKycDecision } from "@/lib/notify";
 
 // Yardımlı kayıt (assisted onboarding, CLAUDE.md §8.3.3) — operatör, akıllı telefonu
 // olmayan üretici ADINA hesap + KYC başvurusu oluşturur, sonra onaylar.
@@ -115,6 +116,9 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
+
+  // Üreticiye "mağazanız açıldı" e-postası (best effort).
+  await notifyKycDecision(app.id);
 
   return NextResponse.json({ ok: true, userId: newUserId, vendorId });
 }

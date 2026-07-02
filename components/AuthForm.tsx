@@ -167,11 +167,11 @@ export function AuthForm({
           {/* Şartlar */}
           <p className="mt-6 text-center text-xs leading-relaxed text-muted">
             {t("authTermsPre")}{" "}
-            <Link href="/hakkimizda" className="font-medium text-forest hover:text-gold">
+            <Link href="/mesafeli-satis-sozlesmesi" className="font-medium text-forest hover:text-gold">
               {t("authTermsService")}
             </Link>{" "}
             {t("authTermsAnd")}{" "}
-            <Link href="/hakkimizda" className="font-medium text-forest hover:text-gold">
+            <Link href="/gizlilik-politikasi" className="font-medium text-forest hover:text-gold">
               {t("authTermsPrivacy")}
             </Link>
             {t("authTermsPost")}

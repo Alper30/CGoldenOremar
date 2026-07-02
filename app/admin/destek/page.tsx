@@ -1,12 +1,15 @@
-import { SectionPlaceholder } from "@/components/admin/section-placeholder";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { SupportInbox, type SupportMessage } from "@/components/admin/SupportInbox";
 
 export const metadata = { title: "Destek / Mesajlar · Yönetim" };
 
-export default function Page() {
-  return (
-    <SectionPlaceholder
-      title="Destek / Mesajlar"
-      description="Müşteri ve satıcı destek talepleri, canlı sohbet ve çok dilli (Türkçe/Kürtçe) mesaj yönetimi burada olacak."
-    />
-  );
+export default async function AdminSupportPage() {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("support_messages")
+    .select("id, name, email, phone, subject, body, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(200);
+
+  return <SupportInbox messages={(data ?? []) as unknown as SupportMessage[]} />;
 }

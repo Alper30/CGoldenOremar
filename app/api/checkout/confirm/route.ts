@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { stripe, stripeEnabled } from "@/lib/stripe";
+import { notifyOrderPaid } from "@/lib/notify";
 
 // Ödemeyi SUNUCUDA doğrular, sonra mark_order_paid RPC'siyle siparişi öder.
 // (Canlıda webhook ile sağlamlaştırılacak; test akışı için PaymentIntent doğrulaması.)
@@ -58,6 +59,11 @@ export async function POST(req: NextRequest) {
     p_secret: process.env.PAYMENT_SECRET ?? "",
   });
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+  // Sipariş e-postaları (best effort). Yukarıdaki payment_status === "pending"
+  // ön koşulu sayesinde yalnızca ilk geçişte gönderilir; webhook tarafı da
+  // "zaten paid" kontrolüyle çifte göndermeyi engeller.
+  await notifyOrderPaid(orderId);
 
   return NextResponse.json({ ok: true });
 }

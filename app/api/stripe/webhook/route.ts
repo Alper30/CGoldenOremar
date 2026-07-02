@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, stripeEnabled } from "@/lib/stripe";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { notifyOrderPaid } from "@/lib/notify";
 
 // Stripe webhook — siparişin ÖDENDİĞİNİN otoritatif kaynağı.
 // 3D Secure'de tarayıcı return_url'e yönlenir ve istemci onFinalize'ı bazen
@@ -45,12 +46,17 @@ export async function POST(req: NextRequest) {
       // oluştururken bağlanır + imza doğrulanır, yine de burada bir kez daha doğrula).
       const { data: ord } = await admin
         .from("orders")
-        .select("grand_total")
+        .select("grand_total, payment_status")
         .eq("id", orderId)
         .single();
       if (ord && pi.amount !== Math.round(Number(ord.grand_total) * 100)) {
         console.error("[stripe-webhook] tutar uyuşmuyor; finalize atlandı:", orderId);
         return NextResponse.json({ error: "Tutar uyuşmuyor" }, { status: 400 });
+      }
+      // Zaten ödendiyse (confirm ucu veya önceki webhook teslimi) hiçbir şey
+      // yapma — finalize idempotent ama e-postanın tekrar gitmesini önler.
+      if (ord?.payment_status === "paid") {
+        return NextResponse.json({ received: true });
       }
       const { error } = await admin.rpc("finalize_order_payment", {
         p_order_id: orderId,
@@ -61,6 +67,8 @@ export async function POST(req: NextRequest) {
         console.error("[stripe-webhook] finalize hatası:", error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
+      // Sipariş onay e-postaları (best effort — hata ödemeyi etkilemez).
+      await notifyOrderPaid(orderId);
     }
   }
 

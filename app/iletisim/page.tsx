@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import {
   ChatIcon,
   MailIcon,
@@ -47,10 +48,28 @@ const subjects = [
 export default function ContactPage() {
   const [loc, setLoc] = useState<Loc>("turkey");
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const info = contactInfo[loc];
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setBusy(true);
+    setError(null);
+    const fd = new FormData(e.currentTarget);
+    const supabase = createSupabaseBrowserClient();
+    const { error: insErr } = await supabase.from("support_messages").insert({
+      name: String(fd.get("name") ?? "").trim(),
+      email: String(fd.get("email") ?? "").trim(),
+      phone: String(fd.get("phone") ?? "").trim() || null,
+      subject: String(fd.get("subject") ?? "").trim(),
+      body: String(fd.get("body") ?? "").trim(),
+    });
+    setBusy(false);
+    if (insErr) {
+      setError("Mesaj gönderilemedi. Lütfen alanları kontrol edip tekrar deneyin.");
+      return;
+    }
     setSent(true);
   };
 
@@ -215,7 +234,9 @@ export default function ContactPage() {
                 <Field label="Ad Soyad" required>
                   <input
                     type="text"
+                    name="name"
                     required
+                    minLength={2}
                     placeholder="Adınız ve soyadınız"
                     className={inputCls}
                   />
@@ -223,6 +244,7 @@ export default function ContactPage() {
                 <Field label="E-posta" required>
                   <input
                     type="email"
+                    name="email"
                     required
                     placeholder="ornek@email.com"
                     className={inputCls}
@@ -231,12 +253,13 @@ export default function ContactPage() {
                 <Field label="Telefon">
                   <input
                     type="tel"
+                    name="phone"
                     placeholder={info.phonePlaceholder}
                     className={inputCls}
                   />
                 </Field>
                 <Field label="Konu" required>
-                  <select required defaultValue="" className={inputCls}>
+                  <select name="subject" required defaultValue="" className={inputCls}>
                     <option value="" disabled>
                       Konu seçiniz
                     </option>
@@ -249,17 +272,25 @@ export default function ContactPage() {
                 </Field>
                 <Field label="Mesajınız" required>
                   <textarea
+                    name="body"
                     required
+                    minLength={5}
                     rows={5}
                     placeholder="Mesajınızı buraya yazabilirsiniz…"
                     className={`${inputCls} resize-none`}
                   />
                 </Field>
+                {error && (
+                  <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {error}
+                  </p>
+                )}
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep"
+                  disabled={busy}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep disabled:opacity-60"
                 >
-                  Mesajı Gönder
+                  {busy ? "Gönderiliyor…" : "Mesajı Gönder"}
                   <ArrowRightIcon className="h-4 w-4" />
                 </button>
               </form>

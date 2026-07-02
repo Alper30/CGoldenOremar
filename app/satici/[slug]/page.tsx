@@ -12,6 +12,27 @@ export async function generateStaticParams() {
   return producers.map((p) => ({ slug: p.slug }));
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await fetchCatalogData();
+  const producer = buildHelpers(data).getProducer(slug);
+  if (!producer) return { title: "Satıcı bulunamadı — Golden Oremar" };
+  const description = `${producer.name} — ${producer.location}. Kimliği doğrulanmış üretici; ${producer.productCount} ürün, ${producer.rating} puan (%${producer.positivePct} olumlu geri bildirim).`;
+  return {
+    title: `${producer.name} — Üretici Mağazası · Golden Oremar`,
+    description,
+    openGraph: {
+      title: producer.name,
+      description,
+      images: producer.cover ? [{ url: producer.cover }] : undefined,
+    },
+  };
+}
+
 function BigStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-2xl border border-line bg-card px-5 py-4 text-center">

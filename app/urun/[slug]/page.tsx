@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fmtPrice } from "@/lib/data";
 import { fetchCatalogData, buildHelpers } from "@/lib/queries";
+import { siteUrl } from "@/lib/site";
 import { StarRating } from "@/components/StarRating";
 import { ProducerTrustCard } from "@/components/ProducerTrustCard";
 import { ReviewList } from "@/components/ReviewList";
@@ -14,6 +15,30 @@ import { ArrowRightIcon, SnowIcon, ShieldIcon, TruckIcon } from "@/components/ic
 export async function generateStaticParams() {
   const { products } = await fetchCatalogData();
   return products.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const data = await fetchCatalogData();
+  const product = buildHelpers(data).getProduct(slug);
+  if (!product) return { title: "Ürün bulunamadı — Golden Oremar" };
+  const description =
+    product.description.length > 155
+      ? product.description.slice(0, 152) + "…"
+      : product.description;
+  return {
+    title: `${product.name} — Golden Oremar`,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      images: product.image ? [{ url: product.image }] : undefined,
+    },
+  };
 }
 
 export default async function ProductPage({
@@ -35,8 +60,46 @@ export default async function ProductPage({
     ? productsByProducer(producer.slug).filter((p) => p.slug !== product.slug)
     : [];
 
+  // Arama motorları için yapılandırılmış veri (rich results: fiyat, puan, stok).
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: gallery,
+    url: `${siteUrl}/urun/${product.slug}`,
+    ...(producer && {
+      brand: { "@type": "Brand", name: producer.name },
+    }),
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "TRY",
+      price: product.price,
+      availability: "https://schema.org/InStock",
+      url: `${siteUrl}/urun/${product.slug}`,
+      seller: producer
+        ? { "@type": "Organization", name: producer.name }
+        : undefined,
+    },
+    ...(product.reviewCount > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: product.rating,
+        reviewCount: product.reviewCount,
+      },
+    }),
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <script
+        type="application/ld+json"
+        // XSS önlemi: "<" kaçırılır ki açıklama içindeki "</script>" script
+        // bloğunu kapatamasın (Next.js'in JSON-LD dokümanındaki yöntem).
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* Breadcrumb */}
       <nav className="flex flex-wrap items-center gap-1.5 text-sm text-muted">
         <Link href="/" className="hover:text-forest">Anasayfa</Link>

@@ -42,6 +42,15 @@ export function ApplicationsManager({ applications }: { applications: App[] }) {
   );
 }
 
+// Karar sonrası başvurana onay/red e-postası (best effort, sunucu doğrular).
+function notifyKyc(applicationId: string) {
+  fetch("/api/notify/kyc", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ applicationId }),
+  }).catch(() => {});
+}
+
 function AppCard({ app }: { app: App }) {
   const { t, toast } = useStore();
   const router = useRouter();
@@ -62,6 +71,7 @@ function AppCard({ app }: { app: App }) {
     const { error } = await supabase.rpc("approve_vendor_application", { p_app_id: app.id });
     setBusy(false);
     if (error) return toast(t("coError"));
+    notifyKyc(app.id);
     toast(t("adDone"));
     router.refresh();
   }
@@ -75,6 +85,7 @@ function AppCard({ app }: { app: App }) {
     });
     setBusy(false);
     if (error) return toast(t("coError"));
+    notifyKyc(app.id);
     toast(t("adDone"));
     router.refresh();
   }
