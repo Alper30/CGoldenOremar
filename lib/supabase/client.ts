@@ -19,17 +19,6 @@ function makeClient(): BrowserClient {
     // `.invalid` (RFC 2606) çözümlenemez → env yokken kimlik bilgisi dışarı sızmaz.
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.invalid",
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "invalid-anon-key",
-    {
-      auth: {
-        // supabase-js her REST isteğinden önce erişim token'ını getSession() ile
-        // alır; bu navigator Web Locks kilidini edinir. @supabase/ssr + Next.js'te
-        // bu kilit deadlock'a girip TÜM sorguları fetch öncesi askıya alabiliyor
-        // (admin dashboard sonsuz skeleton). No-op lock: gerçek kilit almadan
-        // fonksiyonu çalıştırır → deadlock engellenir. Çok-sekmeli token yenileme
-        // koordinasyonu gevşer ama işlevsel etki yok.
-        lock: async (_name, _acquireTimeout, fn) => fn(),
-      },
-    },
   );
 }
 

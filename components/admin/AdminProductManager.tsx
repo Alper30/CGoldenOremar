@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { fmtPrice } from "@/lib/data";
+import { deleteProduct, saveProduct, setProductStatus } from "@/app/admin/urunler/actions";
 
 // Admin ürün yönetimi: tüm satıcıların ürünleri üzerinde tam CRUD +
 // yayın durumu kontrolü. products tablosunda "admin tam yetki" RLS'i olduğu
@@ -55,13 +54,6 @@ const FILTER_LABEL: Record<Filter, string> = {
   rejected: "Reddedildi",
 };
 
-const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[ığüşöçİ]/g, (c) => ({ ı: "i", ğ: "g", ü: "u", ş: "s", ö: "o", ç: "c", İ: "i" })[c] ?? c)
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-
 const blank = {
   name: "",
   vendor_id: "",
@@ -86,7 +78,6 @@ export function AdminProductManager({
   vendors: Vendor[];
   categories: Category[];
 }) {
-  const router = useRouter();
   const [filter, setFilter] = useState<Filter>("pending");
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -144,6 +135,8 @@ export function AdminProductManager({
     setOpen(true);
   }
 
+  // Tüm yazma işlemleri SERVER ACTION üzerinden (server client). Başarıda
+  // revalidatePath('/admin/urunler') listeyi otomatik tazeler → yeni props gelir.
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!form.vendor_id) {
@@ -152,77 +145,47 @@ export function AdminProductManager({
     }
     setBusy("save");
     setError(null);
-    try {
-      const supabase = createSupabaseBrowserClient();
-      let image = keepImage;
-      if (file) {
-        // Görsel, atanan satıcının klasörüne yüklenir → sahiplik tutarlı kalır,
-        // satıcı sonradan kendi klasöründeki görseli güncelleyebilir.
-        const ext = file.name.split(".").pop() || "jpg";
-        const path = `${form.vendor_id}/${Date.now()}.${ext}`;
-        const up = await supabase.storage.from("products").upload(path, file, { upsert: true });
-        if (up.error) throw up.error;
-        image = supabase.storage.from("products").getPublicUrl(path).data.publicUrl;
-      }
 
-      const payload = {
-        name: form.name,
-        vendor_id: form.vendor_id,
-        category_id: form.category_id,
-        status: form.status,
-        price: Number(form.price),
-        old_price: form.old_price ? Number(form.old_price) : null,
-        unit: form.unit,
-        stock: form.stock ? Number(form.stock) : 0,
-        region: form.region || null,
-        badge: form.badge || null,
-        description: form.description || null,
-        cold_chain: form.cold_chain,
-        image,
-      };
+    const fd = new FormData();
+    if (editingId) fd.set("id", editingId);
+    fd.set("vendor_id", form.vendor_id);
+    fd.set("category_id", form.category_id);
+    fd.set("name", form.name);
+    fd.set("status", form.status);
+    fd.set("unit", form.unit);
+    fd.set("price", form.price);
+    fd.set("old_price", form.old_price);
+    fd.set("stock", form.stock);
+    fd.set("region", form.region);
+    fd.set("badge", form.badge);
+    fd.set("description", form.description);
+    fd.set("cold_chain", String(form.cold_chain));
+    if (keepImage) fd.set("keepImage", keepImage);
+    if (file) fd.set("image", file);
 
-      if (editingId) {
-        const { error: e2 } = await supabase.from("products").update(payload).eq("id", editingId);
-        if (e2) throw e2;
-      } else {
-        const { error: e2 } = await supabase.from("products").insert({
-          ...payload,
-          slug: `${slugify(form.name)}-${Math.random().toString(36).slice(2, 6)}`,
-        });
-        if (e2) throw e2;
-      }
-      setOpen(false);
-      router.refresh();
-    } catch (err) {
-      console.error("[admin-product]", err);
-      setError(err instanceof Error ? err.message : "Kaydedilemedi.");
-    } finally {
-      setBusy(null);
+    const res = await saveProduct(fd);
+    setBusy(null);
+    if ("error" in res) {
+      setError(res.error);
+      return;
     }
+    setOpen(false);
   }
 
   async function setStatus(id: string, status: string) {
     setBusy(id);
-    const supabase = createSupabaseBrowserClient();
-    const { error: e2 } = await supabase.from("products").update({ status }).eq("id", id);
+    setError(null);
+    const res = await setProductStatus(id, status);
     setBusy(null);
-    if (e2) {
-      setError(e2.message);
-      return;
-    }
-    router.refresh();
+    if ("error" in res) setError(res.error);
   }
 
   async function del(id: string) {
     setBusy(id);
-    const supabase = createSupabaseBrowserClient();
-    const { error: e2 } = await supabase.from("products").delete().eq("id", id);
+    setError(null);
+    const res = await deleteProduct(id);
     setBusy(null);
-    if (e2) {
-      setError(e2.message);
-      return;
-    }
-    router.refresh();
+    if ("error" in res) setError(res.error);
   }
 
   return (
