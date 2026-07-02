@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { fetchCatalogData } from "@/lib/queries";
+import { HEALTH_GUIDES, RECIPES } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 
 // Statik sayfalar + üründen/satıcıdan üretilen dinamik URL'ler.
@@ -17,6 +18,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/mesafeli-satis-sozlesmesi`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/satici-sozlesmesi`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/iade-politikasi`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/saglik-rehberi`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/tarifler`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteUrl}/etkinlikler`, changeFrequency: "monthly", priority: 0.5 },
+    ...HEALTH_GUIDES.map((a) => ({
+      url: `${siteUrl}/saglik-rehberi/${a.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
+    ...RECIPES.map((a) => ({
+      url: `${siteUrl}/tarifler/${a.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
   ];
 
   try {

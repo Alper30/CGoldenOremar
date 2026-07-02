@@ -168,6 +168,9 @@ export const tr: Dict = {
   footPrivacy: "Gizlilik Politikası",
   footReturns: "İade & Cayma",
   footVendorTerms: "Satıcı Sözleşmesi",
+  footGuides: "Sağlık Rehberi",
+  footRecipes: "Tarifler",
+  footEvents: "Etkinlikler",
   footBrandDesc: "Hakkâri, Yüksekova, Şırnak ve çevresinin doğal ürünleri; kimliği doğrulanmış üreticilerden doğrudan sofranıza.",
   footSupport: "Türkçe & Kurmancî destek",
   footRights: "Doğal Pazar Yeri. Tüm hakları saklıdır.",
@@ -306,6 +309,52 @@ export const tr: Dict = {
   soTermsLink: "Satıcı Sözleşmesi'ni",
   soTermsPost: " okudum ve kabul ediyorum.",
   soTermsRequired: "Devam etmek için Satıcı Sözleşmesi'ni kabul etmelisin.",
+
+  // ---- Ürün detayı panelleri ----
+  pdStoryTitle: "Üreticinin Hikâyesi",
+  pdFeaturesTitle: "Öne Çıkanlar",
+  pdColdChain: "Soğuk zincir ambalajla, serinliği korunarak gönderilir.",
+  pdEscrow: "Ödemeniz, ürünü teslim alıp onaylayana kadar emanette tutulur.",
+  pdTracking: "Kargo takip numarası zorunludur; siparişinizi adım adım izlersiniz.",
+
+  // ---- Nasıl Çalışır ----
+  hwEyebrow: "Güven, baştan sona",
+  hwTitle: "Nasıl çalışır?",
+  hwIntro:
+    "Üreticiyi alıcıyla, emeği güvenle buluşturuyoruz. Aradaki her adımı şeffaf tuttuk; ne aldığınızı ve kimden aldığınızı her zaman bilin.",
+  hwBuyerTitle: "Alıcıysanız",
+  hwBuyerSub: "Dört adımda, gönül rahatlığıyla.",
+  hwB1Title: "Üreticiyi ve menşeini gör",
+  hwB1Text:
+    "Her ürünün üzerinde nereden geldiği yazar. Üreticinin profiline girip kaç ürün sattığını, puanını ve yorumlarını incelersiniz.",
+  hwB2Title: "Güvenle öde",
+  hwB2Text:
+    "Ödemeniz doğrudan satıcıya geçmez; ürünü teslim alıp onaylayana kadar platformda emanette (escrow) bekler.",
+  hwB3Title: "Siparişini izle",
+  hwB3Text:
+    "Kargo takip numarası zorunludur. Ürününüz yola çıktığı andan kapınıza gelene dek her adımı görürsünüz.",
+  hwB4Title: "Tazeliğiyle teslim al",
+  hwB4Text:
+    "Süt, peynir gibi ürünler soğuk zincir ambalajıyla serinliği korunarak gelir. Beğenmezseniz iade güvencesi.",
+  hwSellerTitle: "Üreticiyseniz",
+  hwSellerSub: "Bahçenizdeki bereketi gelire dönüştürün; gerisini biz hallederiz.",
+  hwS1Title: "Kimliğini doğrula (KYC)",
+  hwS1Text:
+    "Basit bir kimlik doğrulamasıyla güvenilir satıcı rozetini alırsın. Böylece alıcılar sana güvenir.",
+  hwS2Title: "Ürününü ekle — yalnız değilsin",
+  hwS2Text:
+    "Teknolojiyle aran iyi olmasa da olur. Fotoğraf, açıklama ve fiyatlandırmada ekibimiz ve Kürtçe/Türkçe destek hattımız yanında.",
+  hwS3Title: "İlçe merkezine getir",
+  hwS3Text:
+    "Ürününü ilçe merkezindeki toplama noktasına bırak; istersen özel soğuk/koruyucu ambalajları da oradan al ya da adresine getirt.",
+  hwS4Title: "Sat, kazancını al",
+  hwS4Text:
+    "Alıcı ürünü onayladığında komisyon düşülür, kalan tutar bakiyene geçer. Tüm hareketler şeffaf biçimde kayıt altındadır.",
+  hwColdTitle: "Soğuk zincir & toplama noktası",
+  hwColdText:
+    "Taze ürünlerin bozulmaması için özel yalıtımlı, soğuk tutan ambalajlar sağlıyoruz. Üreticiler bu ambalajları platformdan sipariş edebilir ya da ürünlerini getirdikleri ilçe merkezindeki toplama noktasından teslim alabilir. Tek lokasyon, çift işlev: hem ürün toplama hem ambalaj dağıtım.",
+  hwCtaTitle: "Doğanın bereketini keşfetmeye hazır mısınız?",
+  hwCtaBtn: "Ürünleri keşfet",
 
   // ---- Satıcı Paneli (operatör) ----
   vpPanel: "Satıcı Paneli",
@@ -583,6 +632,9 @@ export const ku: Dict = {
   footPrivacy: "Politikaya Nehêniyê",
   footReturns: "Vegerandin & Dev jê berdan",
   footVendorTerms: "Peymana Firoşkar",
+  footGuides: "Rêbera Tenduristiyê",
+  footRecipes: "Reçete",
+  footEvents: "Çalakî",
   footBrandDesc: "Hilberên xwezayî yên Hakkarî, Yüksekova, Şırnak û derdorê; rasterast ji hilberînerên nasnameya wan piştrastkirî ber bi sifreya we.",
   footSupport: "Piştgiriya Tirkî & Kurmancî",
   footRights: "Bazara Xwezayî. Hemû maf parastî ne.",
@@ -721,6 +773,50 @@ export const ku: Dict = {
   soTermsLink: "Peymana Firoşkar",
   soTermsPost: " xwend û ez qebûl dikim.",
   soTermsRequired: "Ji bo berdewamiyê divê tu Peymana Firoşkar qebûl bikî.",
+  // Panelên hûrguliya hilberê
+  pdStoryTitle: "Çîroka Hilberîner",
+  pdFeaturesTitle: "Yên Berbiçav",
+  pdColdChain: "Bi pakêta zincîra sar, hênikiya wê tê parastin û tê şandin.",
+  pdEscrow: "Dravê te heta ku tu hilberê teslîm bigirî û bipejirînî di emanetê de tê girtin.",
+  pdTracking: "Hejmara şopandina kargoyê mecbûrî ye; tu sîparîşa xwe gav bi gav dişopînî.",
+  // Çawa dixebite
+  hwEyebrow: "Bawerî, ji serî heta dawî",
+  hwTitle: "Çawa dixebite?",
+  hwIntro:
+    "Em hilberîner û kiryaran, keda wan bi ewlehî digihînin hev. Her gav zelal e; tu her dem dizanî çi distînî û ji kê distînî.",
+  hwBuyerTitle: "Heke tu kiryar î",
+  hwBuyerSub: "Bi çar gavan, bi dilrehetî.",
+  hwB1Title: "Hilberîner û eslê wê bibîne",
+  hwB1Text:
+    "Li ser her hilberê tê nivîsîn ku ji ku tê. Tu dikevî profîla hilberîner û dibînî çend hilber firotiye, pûan û şîroveyên wî.",
+  hwB2Title: "Bi ewlehî bide",
+  hwB2Text:
+    "Dravê te rasterast naçe firoşkar; heta ku tu hilberê teslîm bigirî û bipejirînî li platformê di emanetê (escrow) de dimîne.",
+  hwB3Title: "Sîparîşa xwe bişopîne",
+  hwB3Text:
+    "Hejmara şopandina kargoyê mecbûrî ye. Ji dema ku hilbera te derdikeve rê heta ber deriyê te her gavê dibînî.",
+  hwB4Title: "Bi taze teslîm bigire",
+  hwB4Text:
+    "Hilberên wek şîr û penîr bi pakêta zincîra sar tên. Heke nebijî, garantiya vegerandinê heye.",
+  hwSellerTitle: "Heke tu hilberîner î",
+  hwSellerSub: "Bereketa baxçeyê xwe bike dahat; yên din em çareser dikin.",
+  hwS1Title: "Nasnameya xwe piştrast bike (KYC)",
+  hwS1Text:
+    "Bi piştrastkirineke hêsan a nasnameyê tu nîşana firoşkarê pêbawer distînî. Bi vî awayî kiryar ji te bawer dikin.",
+  hwS2Title: "Hilbera xwe zêde bike — tu ne bi tenê yî",
+  hwS2Text:
+    "Ne xem e ku tu ji teknolojiyê fam nakî. Di wêne, danasîn û bihakirinê de tîma me û xeta piştgiriya Kurdî/Tirkî li gel te ye.",
+  hwS3Title: "Bîne navenda navçeyê",
+  hwS3Text:
+    "Hilbera xwe bibe xala berhevkirinê ya li navenda navçeyê; heke bixwazî pakêtên taybet ên sar/parastinê jî ji wir bigire an bide şandin mala xwe.",
+  hwS4Title: "Bifiroşe, qezenca xwe bigire",
+  hwS4Text:
+    "Dema kiryar hilberê dipejirîne komîsyon tê birîn, tiştê mayî dikeve bermayiya te. Hemû tevger bi zelalî tên tomarkirin.",
+  hwColdTitle: "Zincîra sar & xala berhevkirinê",
+  hwColdText:
+    "Ji bo ku hilberên taze xera nebin, em pakêtên taybet ên îzolekirî û sar peyda dikin. Hilberîner dikarin van pakêtan ji platformê sîpariş bikin an jî ji xala berhevkirinê ya li navenda navçeyê bigirin. Yek cih, du erk: hem berhevkirina hilberan hem belavkirina pakêtan.",
+  hwCtaTitle: "Tu amade yî bereketa xwezayê keşf bikî?",
+  hwCtaBtn: "Hilberan keşf bike",
   // Panela firoşkar (vendor panel)
   vpPanel: "Panela Firoşkar",
   vpDashboard: "Kurte",

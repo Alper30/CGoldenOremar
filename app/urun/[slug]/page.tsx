@@ -10,13 +10,8 @@ import { ReviewForm } from "@/components/ReviewForm";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductGallery } from "@/components/ProductGallery";
 import { AddToCart } from "@/components/AddToCart";
-import {
-  ArrowRightIcon,
-  SnowIcon,
-  ShieldIcon,
-  TruckIcon,
-  VerifiedIcon,
-} from "@/components/icons";
+import { ProductInfoPanels } from "@/components/ProductInfoPanels";
+import { ArrowRightIcon } from "@/components/icons";
 
 export async function generateStaticParams() {
   const { products } = await fetchCatalogData();
@@ -179,50 +174,12 @@ export default async function ProductPage({
           {/* Adet + sepet + favori (interaktif) */}
           <AddToCart slug={product.slug} name={product.name} />
 
-          {/* Ürün hikâyesi (üretici ağzından) */}
-          {product.story && (
-            <div className="mt-6 rounded-2xl border border-gold/30 bg-amber-bg/50 p-5">
-              <p className="text-xs font-semibold uppercase tracking-wider text-gold-deep">
-                Üreticinin Hikâyesi
-              </p>
-              <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink/90">
-                {product.story}
-              </p>
-            </div>
-          )}
-
-          {/* Öne çıkan özellikler */}
-          {product.features && product.features.length > 0 && (
-            <ul className="mt-6 space-y-2 rounded-2xl border border-line bg-card p-5 text-sm">
-              <li className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Öne Çıkanlar
-              </li>
-              {product.features.map((f, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-ink/90">
-                  <VerifiedIcon className="mt-0.5 h-4 w-4 shrink-0 text-forest" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {/* Güven satırı */}
-          <ul className="mt-6 space-y-2.5 rounded-2xl border border-line bg-card p-5 text-sm">
-            {product.coldChain && (
-              <li className="flex items-center gap-2.5 text-ink/90">
-                <SnowIcon className="h-5 w-5 shrink-0 text-forest" />
-                Soğuk zincir ambalajla, serinliği korunarak gönderilir.
-              </li>
-            )}
-            <li className="flex items-center gap-2.5 text-ink/90">
-              <ShieldIcon className="h-5 w-5 shrink-0 text-forest" />
-              Ödemeniz, ürünü teslim alıp onaylayana kadar emanette tutulur.
-            </li>
-            <li className="flex items-center gap-2.5 text-ink/90">
-              <TruckIcon className="h-5 w-5 shrink-0 text-forest" />
-              Kargo takip numarası zorunludur; siparişinizi adım adım izlersiniz.
-            </li>
-          </ul>
+          {/* Hikâye + öne çıkanlar + güven notları (i18n, istemci) */}
+          <ProductInfoPanels
+            story={product.story}
+            features={product.features}
+            coldChain={product.coldChain}
+          />
 
           {producer && (
             <div className="mt-6">

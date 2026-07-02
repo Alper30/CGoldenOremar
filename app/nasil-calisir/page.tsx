@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useStore } from "@/components/store";
 import {
   VerifiedIcon,
   ShieldIcon,
@@ -9,51 +12,20 @@ import {
   ArrowRightIcon,
 } from "@/components/icons";
 
+// Adım kartları çeviri anahtarlarıyla tanımlanır (TR/KU dil deposundan gelir).
 const buyerSteps = [
-  {
-    icon: PinIcon,
-    title: "Üreticiyi ve menşeini gör",
-    text: "Her ürünün üzerinde nereden geldiği yazar. Üreticinin profiline girip kaç ürün sattığını, puanını ve yorumlarını incelersiniz.",
-  },
-  {
-    icon: ShieldIcon,
-    title: "Güvenle öde",
-    text: "Ödemeniz doğrudan satıcıya geçmez; ürünü teslim alıp onaylayana kadar platformda emanette (escrow) bekler.",
-  },
-  {
-    icon: TruckIcon,
-    title: "Siparişini izle",
-    text: "Kargo takip numarası zorunludur. Ürününüz yola çıktığı andan kapınıza gelene dek her adımı görürsünüz.",
-  },
-  {
-    icon: SnowIcon,
-    title: "Tazeliğiyle teslim al",
-    text: "Süt, peynir gibi ürünler soğuk zincir ambalajıyla serinliği korunarak gelir. Beğenmezseniz iade güvencesi.",
-  },
-];
+  { icon: PinIcon, title: "hwB1Title", text: "hwB1Text" },
+  { icon: ShieldIcon, title: "hwB2Title", text: "hwB2Text" },
+  { icon: TruckIcon, title: "hwB3Title", text: "hwB3Text" },
+  { icon: SnowIcon, title: "hwB4Title", text: "hwB4Text" },
+] as const;
 
 const sellerSteps = [
-  {
-    icon: VerifiedIcon,
-    title: "Kimliğini doğrula (KYC)",
-    text: "Basit bir kimlik doğrulamasıyla güvenilir satıcı rozetini alırsın. Böylece alıcılar sana güvenir.",
-  },
-  {
-    icon: LeafIcon,
-    title: "Ürününü ekle — yalnız değilsin",
-    text: "Teknolojiyle aran iyi olmasa da olur. Fotoğraf, açıklama ve fiyatlandırmada ekibimiz ve Kürtçe/Türkçe destek hattımız yanında.",
-  },
-  {
-    icon: PinIcon,
-    title: "İlçe merkezine getir",
-    text: "Ürününü ilçe merkezindeki toplama noktasına bırak; istersen özel soğuk/koruyucu ambalajları da oradan al ya da adresine getirt.",
-  },
-  {
-    icon: ShieldIcon,
-    title: "Sat, kazancını al",
-    text: "Alıcı ürünü onayladığında komisyon düşülür, kalan tutar bakiyene geçer. Tüm hareketler şeffaf biçimde kayıt altındadır.",
-  },
-];
+  { icon: VerifiedIcon, title: "hwS1Title", text: "hwS1Text" },
+  { icon: LeafIcon, title: "hwS2Title", text: "hwS2Text" },
+  { icon: PinIcon, title: "hwS3Title", text: "hwS3Text" },
+  { icon: ShieldIcon, title: "hwS4Title", text: "hwS4Text" },
+] as const;
 
 function StepCard({
   index,
@@ -79,31 +51,37 @@ function StepCard({
 }
 
 export default function HowItWorksPage() {
+  const { t } = useStore();
   return (
     <div>
       {/* Başlık */}
       <section className="border-b border-line bg-canvas">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 lg:py-20">
           <p className="text-xs font-semibold uppercase tracking-wider text-gold">
-            Güven, baştan sona
+            {t("hwEyebrow")}
           </p>
           <h1 className="mt-2 font-display text-4xl text-forest-deep lg:text-5xl">
-            Nasıl çalışır?
+            {t("hwTitle")}
           </h1>
           <p className="mx-auto mt-4 max-w-xl leading-relaxed text-muted">
-            Üreticiyi alıcıyla, emeği güvenle buluşturuyoruz. Aradaki her adımı
-            şeffaf tuttuk; ne aldığınızı ve kimden aldığınızı her zaman bilin.
+            {t("hwIntro")}
           </p>
         </div>
       </section>
 
       {/* Alıcı için */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-        <h2 className="font-display text-3xl text-forest-deep">Alıcıysanız</h2>
-        <p className="mt-2 text-muted">Dört adımda, gönül rahatlığıyla.</p>
+        <h2 className="font-display text-3xl text-forest-deep">{t("hwBuyerTitle")}</h2>
+        <p className="mt-2 text-muted">{t("hwBuyerSub")}</p>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {buyerSteps.map((s, i) => (
-            <StepCard key={s.title} index={i + 1} {...s} />
+            <StepCard
+              key={s.title}
+              index={i + 1}
+              icon={s.icon}
+              title={t(s.title)}
+              text={t(s.text)}
+            />
           ))}
         </div>
       </section>
@@ -112,14 +90,18 @@ export default function HowItWorksPage() {
       <section className="bg-canvas">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
           <h2 className="font-display text-3xl text-forest-deep">
-            Üreticiyseniz
+            {t("hwSellerTitle")}
           </h2>
-          <p className="mt-2 text-muted">
-            Bahçenizdeki bereketi gelire dönüştürün; gerisini biz hallederiz.
-          </p>
+          <p className="mt-2 text-muted">{t("hwSellerSub")}</p>
           <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {sellerSteps.map((s, i) => (
-              <StepCard key={s.title} index={i + 1} {...s} />
+              <StepCard
+                key={s.title}
+                index={i + 1}
+                icon={s.icon}
+                title={t(s.title)}
+                text={t(s.text)}
+              />
             ))}
           </div>
         </div>
@@ -132,19 +114,9 @@ export default function HowItWorksPage() {
             <SnowIcon className="h-8 w-8 shrink-0 text-gold" />
             <div>
               <h3 className="font-display text-2xl text-forest-deep">
-                Soğuk zincir & toplama noktası
+                {t("hwColdTitle")}
               </h3>
-              <p className="mt-3 leading-relaxed text-muted">
-                Taze ürünlerin bozulmaması için özel yalıtımlı, soğuk tutan
-                ambalajlar sağlıyoruz. Üreticiler bu ambalajları{" "}
-                <strong className="text-forest">platformdan sipariş edebilir</strong>{" "}
-                ya da ürünlerini getirdikleri{" "}
-                <strong className="text-forest">
-                  ilçe merkezindeki toplama noktasından
-                </strong>{" "}
-                teslim alabilir. Tek lokasyon, çift işlev: hem ürün toplama hem
-                ambalaj dağıtım.
-              </p>
+              <p className="mt-3 leading-relaxed text-muted">{t("hwColdText")}</p>
             </div>
           </div>
         </div>
@@ -154,13 +126,13 @@ export default function HowItWorksPage() {
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
         <div className="rounded-[2rem] bg-forest-deep px-8 py-14 text-center">
           <h2 className="mx-auto max-w-2xl font-display text-3xl text-cream lg:text-4xl">
-            Doğanın bereketini keşfetmeye hazır mısınız?
+            {t("hwCtaTitle")}
           </h2>
           <Link
             href="/urunler"
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-forest-deep transition-transform hover:scale-[1.02]"
           >
-            Ürünleri keşfet
+            {t("hwCtaBtn")}
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </div>

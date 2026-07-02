@@ -36,6 +36,9 @@ export function Footer() {
         { href: "/siparis-takip", label: t("navTracking") },
         { href: "/randevu", label: t("navBooking") },
         { href: "/nasil-calisir", label: t("navSell") },
+        { href: "/saglik-rehberi", label: t("footGuides") },
+        { href: "/tarifler", label: t("footRecipes") },
+        { href: "/etkinlikler", label: t("footEvents") },
       ],
     },
     {
