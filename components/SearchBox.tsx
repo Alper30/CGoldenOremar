@@ -106,7 +106,7 @@ export function SearchBox({
                     </span>
                     <span className="block truncate text-xs text-muted">{p.region}</span>
                   </span>
-                  <span className="shrink-0 font-display text-sm text-forest-deep">
+                  <span className="shrink-0 text-sm font-bold tabular-nums text-forest-deep">
                     {fmtPrice(p.price)}
                   </span>
                 </button>

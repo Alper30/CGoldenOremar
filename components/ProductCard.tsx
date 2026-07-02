@@ -86,22 +86,24 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="mt-auto flex items-end justify-between gap-2 pt-4">
-          <div className="flex flex-col leading-tight">
+          <div className="flex min-w-0 flex-col leading-tight">
             {product.oldPrice && (
-              <span className="text-xs text-muted line-through">
+              <span className="text-xs tabular-nums text-muted line-through">
                 {fmtPrice(product.oldPrice)}
               </span>
             )}
-            <span className="font-display text-xl text-forest-deep">
+            <span className="text-lg font-bold tracking-tight tabular-nums text-forest-deep">
               {fmtPrice(product.price)}
             </span>
           </div>
+          {/* Dar kartlarda (mobil 2 sütun) yalnız ikon; sm+ metinli buton */}
           <button
             onClick={onAdd}
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-gold px-3.5 py-2 text-xs font-semibold text-cream transition-colors hover:bg-gold-deep"
+            aria-label={t("addToCart")}
+            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-cream transition-colors hover:bg-gold-deep sm:h-auto sm:w-auto sm:gap-1.5 sm:whitespace-nowrap sm:px-3.5 sm:py-2 sm:text-xs sm:font-semibold"
           >
             <CartIcon className="h-4 w-4 shrink-0" />
-            {t("addToCart")}
+            <span className="hidden sm:inline">{t("addToCart")}</span>
           </button>
         </div>
       </div>

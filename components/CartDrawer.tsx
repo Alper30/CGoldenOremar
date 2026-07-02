@@ -109,7 +109,7 @@ export function CartDrawer() {
                             <PlusIcon className="h-3.5 w-3.5" />
                           </button>
                         </div>
-                        <span className="font-display text-sm text-forest-deep">
+                        <span className="text-sm font-bold tabular-nums text-forest-deep">
                           {fmtPrice(p.price * l.qty)}
                         </span>
                       </div>
@@ -135,7 +135,7 @@ export function CartDrawer() {
             <div className="border-t border-line bg-card px-5 py-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted">{t("cartSubtotal")}</span>
-                <span className="font-display text-xl text-forest-deep">
+                <span className="text-xl font-bold tracking-tight tabular-nums text-forest-deep">
                   {fmtPrice(subtotal)}
                 </span>
               </div>

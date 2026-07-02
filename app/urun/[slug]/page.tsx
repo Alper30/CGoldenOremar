@@ -159,11 +159,11 @@ export default async function ProductPage({
 
           <div className="mt-6 flex items-end gap-3">
             {product.oldPrice && (
-              <span className="pb-1 text-base text-muted line-through">
+              <span className="pb-1 text-base tabular-nums text-muted line-through">
                 {fmtPrice(product.oldPrice)}
               </span>
             )}
-            <p className="font-display text-4xl text-forest-deep">
+            <p className="text-3xl font-bold tracking-tight tabular-nums text-forest-deep sm:text-4xl">
               {fmtPrice(product.price)}
             </p>
             <p className="pb-1 text-sm text-muted">/ {product.unit}</p>

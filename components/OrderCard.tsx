@@ -72,7 +72,7 @@ export function OrderCard({ order }: { order: AnyOrder }) {
           >
             {t(order.payment_status === "paid" ? "payPaid" : "payPending")}
           </span>
-          <span className="font-display text-lg text-forest-deep">
+          <span className="text-lg font-bold tracking-tight tabular-nums text-forest-deep">
             {fmtPrice(Number(order.grand_total))}
           </span>
         </div>
