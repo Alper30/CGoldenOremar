@@ -13,7 +13,7 @@ import { ActivityFeed, CityDistributionList, TopProducts, TopVendors } from "./d
 
 export function Dashboard() {
   const [range, setRange] = useState<DateRangeKey>("30d");
-  const { data, loading } = useAdminDashboard(range);
+  const { data, loading, error, retry } = useAdminDashboard(range);
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,7 +24,21 @@ export function Dashboard() {
         <DateRangePicker value={range} onChange={setRange} />
       </div>
 
-      {loading || !data ? (
+      {error && !loading ? (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center">
+          <p className="text-sm font-medium text-destructive">
+            Gösterge paneli verisi yüklenemedi
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{error}</p>
+          <button
+            type="button"
+            onClick={retry}
+            className="mt-4 inline-flex items-center rounded-md border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted"
+          >
+            Tekrar dene
+          </button>
+        </div>
+      ) : loading || !data ? (
         <DashboardSkeleton />
       ) : (
         <>
