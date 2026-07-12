@@ -32,6 +32,15 @@ export const supabase = createClient<Database>(
   url ?? "https://placeholder.invalid",
   anonKey ?? "invalid-anon-key",
   {
-    auth: { persistSession: false, autoRefreshToken: false },
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      // AYRI storageKey ŞART: varsayılan `sb-<ref>-auth-token` ssr browser
+      // client ile paylaşılıyordu → aynı navigator.locks kilit adı → checkout'ta
+      // authenticated .rpc() kilidi bekleyip HTTP isteğini hiç göndermeden
+      // asılıyordu. Ayrı anahtar = ayrı kilit ad-alanı → çekişme biter ve
+      // "Multiple GoTrueClient instances" uyarısı da kalkar.
+      storageKey: "sb-go-anon-readonly",
+    },
   },
 );
