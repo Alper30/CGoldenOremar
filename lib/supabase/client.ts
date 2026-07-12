@@ -19,6 +19,19 @@ function makeClient(): BrowserClient {
     // `.invalid` (RFC 2606) çözümlenemez → env yokken kimlik bilgisi dışarı sızmaz.
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.invalid",
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "invalid-anon-key",
+    {
+      auth: {
+        // KRİTİK — navigator.locks DEADLOCK'unu tamamen kaldır.
+        // Varsayılan kilit `navigator.locks` kullanır ve TÜM aynı-origin sekmeler
+        // arasında paylaşılır: bir sekme/instance kilidi tutup serbest bırakmazsa
+        // (çoklu GoTrueClient, asılı init, kapanmış sekme) diğer her .rpc()/sorgu
+        // token'ı almak için kilidi beklerken HTTP isteğini HİÇ GÖNDERMEDEN sonsuza
+        // dek asılıyordu (checkout "İşleniyor…"da kalıyordu, Network paneli boştu).
+        // Oturum kaynağı cookie + middleware refresh olduğundan sekmeler-arası kilide
+        // ihtiyaç yok. No-op kilit: fonksiyonu doğrudan çalıştır → asla bloklanmaz.
+        lock: <R,>(_name: string, _acquireTimeout: number, fn: () => Promise<R>) => fn(),
+      },
+    },
   );
 }
 
