@@ -2,6 +2,9 @@ import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { sendEmail, renderEmail, fmtTRY, escHtml, siteUrl } from "@/lib/email";
 
+// Platformun destek/operasyon gelen kutusu — randevu/iletişim bildirimleri buraya.
+const adminInbox = process.env.ADMIN_EMAIL ?? "info@goldenoremar.com";
+
 // Sipariş/KYC olaylarında e-posta bildirimi. Tümü "best effort":
 // hata durumunda loglar, asla üst akışı (ödeme, kargo, onay) kırmaz.
 // E-posta adresleri auth.users'ta olduğundan service-role zorunludur;
@@ -137,6 +140,39 @@ export async function notifyShipped(orderVendorId: string) {
     });
   } catch (err) {
     console.error("[notify] shipped hatası:", err);
+  }
+}
+
+// Yeni randevu talebi → platform gelen kutusuna bildirim (best effort).
+export async function notifyNewBooking(b: {
+  experience_type: string;
+  guests: number;
+  booking_date: string;
+  booking_time: string;
+  name: string;
+  email: string;
+  phone: string;
+  notes?: string | null;
+}) {
+  try {
+    await sendEmail({
+      to: adminInbox,
+      subject: `Yeni randevu talebi · ${b.experience_type}`,
+      html: renderEmail({
+        title: "Yeni randevu / deneyim talebi",
+        bodyHtml: `
+          <p><strong>${escHtml(b.experience_type)}</strong></p>
+          <p>Tarih: <strong>${escHtml(b.booking_date)}</strong> · Saat: <strong>${escHtml(b.booking_time)}</strong> · Misafir: <strong>${b.guests}</strong></p>
+          <p>Ad Soyad: ${escHtml(b.name)}<br>
+          E-posta: ${escHtml(b.email)}<br>
+          Telefon: ${escHtml(b.phone)}</p>
+          ${b.notes ? `<p>Not: ${escHtml(b.notes)}</p>` : ""}`,
+        ctaLabel: "Yönetim Panelinde Aç",
+        ctaUrl: `${siteUrl}/admin/randevular`,
+      }),
+    });
+  } catch (err) {
+    console.error("[notify] booking hatası:", err);
   }
 }
 

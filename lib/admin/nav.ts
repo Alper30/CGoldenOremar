@@ -14,6 +14,7 @@ import {
   Bell,
   ScrollText,
   UserPlus,
+  CalendarClock,
 } from "lucide-react";
 
 export interface NavItem {
@@ -55,6 +56,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { key: "reviews", label: "Değerlendirmeler", href: "/admin/degerlendirmeler", icon: Star },
       { key: "reports", label: "Raporlar", href: "/admin/raporlar", icon: BarChart3 },
       { key: "support", label: "Destek / Mesajlar", href: "/admin/destek", icon: MessageSquare },
+      { key: "bookings", label: "Randevular", href: "/admin/randevular", icon: CalendarClock },
       { key: "notifications", label: "Bildirimler", href: "/admin/bildirimler", icon: Bell },
       { key: "logs", label: "Aktivite Kaydı", href: "/admin/loglar", icon: ScrollText },
     ],

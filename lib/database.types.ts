@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_date: string
+          booking_time: string
+          created_at: string
+          email: string
+          experience_type: string
+          guests: number
+          id: string
+          name: string
+          notes: string | null
+          phone: string
+          status: string
+        }
+        Insert: {
+          booking_date: string
+          booking_time: string
+          created_at?: string
+          email: string
+          experience_type: string
+          guests: number
+          id?: string
+          name: string
+          notes?: string | null
+          phone: string
+          status?: string
+        }
+        Update: {
+          booking_date?: string
+          booking_time?: string
+          created_at?: string
+          email?: string
+          experience_type?: string
+          guests?: number
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          status?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -489,6 +531,7 @@ export type Database = {
           id: string
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          suspended: boolean
           updated_at: string
         }
         Insert: {
@@ -497,6 +540,7 @@ export type Database = {
           id: string
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          suspended?: boolean
           updated_at?: string
         }
         Update: {
@@ -505,6 +549,7 @@ export type Database = {
           id?: string
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          suspended?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -519,6 +564,9 @@ export type Database = {
           id: string
           name: string
           phone: string | null
+          replied_at: string | null
+          replied_by: string | null
+          reply_body: string | null
           status: string
           subject: string
           user_id: string | null
@@ -532,6 +580,9 @@ export type Database = {
           id?: string
           name: string
           phone?: string | null
+          replied_at?: string | null
+          replied_by?: string | null
+          reply_body?: string | null
           status?: string
           subject: string
           user_id?: string | null
@@ -545,6 +596,9 @@ export type Database = {
           id?: string
           name?: string
           phone?: string | null
+          replied_at?: string | null
+          replied_by?: string | null
+          reply_body?: string | null
           status?: string
           subject?: string
           user_id?: string | null
@@ -639,6 +693,7 @@ export type Database = {
           review_count: number
           slug: string
           story: string | null
+          suspended: boolean
           units_sold: number
           user_id: string | null
           verified: boolean
@@ -664,6 +719,7 @@ export type Database = {
           review_count?: number
           slug: string
           story?: string | null
+          suspended?: boolean
           units_sold?: number
           user_id?: string | null
           verified?: boolean
@@ -689,6 +745,7 @@ export type Database = {
           review_count?: number
           slug?: string
           story?: string | null
+          suspended?: boolean
           units_sold?: number
           user_id?: string | null
           verified?: boolean
@@ -747,6 +804,25 @@ export type Database = {
     Functions: {
       admin_dashboard: { Args: { p_days?: number }; Returns: Json }
       admin_delete_review: { Args: { p_id: string }; Returns: undefined }
+      admin_set_user_role: {
+        Args: {
+          p_role: Database["public"]["Enums"]["user_role"]
+          p_user: string
+        }
+        Returns: undefined
+      }
+      admin_set_user_suspended: {
+        Args: { p_suspended: boolean; p_user: string }
+        Returns: undefined
+      }
+      admin_set_vendor_suspended: {
+        Args: { p_suspended: boolean; p_vendor: string }
+        Returns: undefined
+      }
+      admin_set_vendor_verified: {
+        Args: { p_vendor: string; p_verified: boolean }
+        Returns: undefined
+      }
       admin_stats: { Args: never; Returns: Json }
       approve_vendor_application: {
         Args: { p_app_id: string }
@@ -755,6 +831,19 @@ export type Database = {
       confirm_received: {
         Args: { p_order_vendor_id: string }
         Returns: undefined
+      }
+      create_booking: {
+        Args: {
+          p_date: string
+          p_email: string
+          p_experience: string
+          p_guests: number
+          p_name: string
+          p_notes: string
+          p_phone: string
+          p_time: string
+        }
+        Returns: string
       }
       create_order: { Args: { p_items: Json; p_ship: Json }; Returns: string }
       finalize_order_payment: {

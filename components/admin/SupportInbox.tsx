@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Mail, Phone, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, CheckCircle2, Send } from "lucide-react";
+import { sendSupportReply, closeSupport } from "@/app/admin/destek/actions";
 
 export type SupportMessage = {
   id: string;
@@ -15,33 +15,51 @@ export type SupportMessage = {
   body: string;
   status: string;
   created_at: string;
+  reply_body: string | null;
+  replied_at: string | null;
 };
 
 const fmtTs = (iso: string) =>
-  new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" }).format(
-    new Date(iso),
-  );
+  new Intl.DateTimeFormat("tr-TR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-function MessageCard({ msg, onClosed }: { msg: SupportMessage; onClosed: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const open = msg.status === "open";
+const STATUS: Record<string, { label: string; cls: string }> = {
+  open: { label: "Açık", cls: "bg-gold/15 text-gold" },
+  answered: { label: "Yanıtlandı", cls: "bg-green-50 text-green-700" },
+  closed: { label: "Kapatıldı", cls: "bg-muted text-muted-foreground" },
+};
 
-  async function close() {
-    setBusy(true);
-    const supabase = createSupabaseBrowserClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const { error } = await supabase
-      .from("support_messages")
-      .update({ status: "closed", closed_at: new Date().toISOString(), closed_by: user?.id ?? null })
-      .eq("id", msg.id);
-    setBusy(false);
-    if (!error) onClosed();
+function MessageCard({ msg }: { msg: SupportMessage }) {
+  const router = useRouter();
+  const [reply, setReply] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const st = STATUS[msg.status] ?? STATUS.open;
+  const closed = msg.status === "closed";
+
+  function submitReply() {
+    if (!reply.trim()) return;
+    setErr(null);
+    startTransition(async () => {
+      const res = await sendSupportReply(msg.id, reply);
+      if ("error" in res) setErr(res.error);
+      else {
+        setReply("");
+        router.refresh();
+      }
+    });
+  }
+
+  function close() {
+    setErr(null);
+    startTransition(async () => {
+      const res = await closeSupport(msg.id);
+      if ("error" in res) setErr(res.error);
+      else router.refresh();
+    });
   }
 
   return (
-    <Card className={`gap-3 p-5 ${open ? "" : "opacity-70"}`}>
+    <Card className={`gap-3 p-5 ${closed ? "opacity-70" : ""}`}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="font-semibold text-foreground">{msg.subject}</p>
@@ -49,13 +67,7 @@ function MessageCard({ msg, onClosed }: { msg: SupportMessage; onClosed: () => v
             {msg.name} · {fmtTs(msg.created_at)}
           </p>
         </div>
-        <span
-          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-            open ? "bg-gold/15 text-gold" : "bg-muted text-muted-foreground"
-          }`}
-        >
-          {open ? "Açık" : "Kapatıldı"}
-        </span>
+        <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${st.cls}`}>{st.label}</span>
       </div>
 
       <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">{msg.body}</p>
@@ -69,55 +81,81 @@ function MessageCard({ msg, onClosed }: { msg: SupportMessage; onClosed: () => v
             <Phone className="size-3.5" /> {msg.phone}
           </a>
         )}
-        {open && (
-          <button
-            type="button"
-            onClick={close}
-            disabled={busy}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60"
-          >
-            <CheckCircle2 className="size-3.5" />
-            {busy ? "Kapatılıyor…" : "Çözüldü olarak kapat"}
-          </button>
-        )}
       </div>
+
+      {msg.reply_body && (
+        <div className="rounded-xl border border-border bg-muted/40 p-3">
+          <p className="mb-1 text-xs font-semibold text-muted-foreground">
+            Yanıtınız{msg.replied_at ? ` · ${fmtTs(msg.replied_at)}` : ""}
+          </p>
+          <p className="whitespace-pre-wrap text-sm text-foreground/90">{msg.reply_body}</p>
+        </div>
+      )}
+
+      {!closed && (
+        <div className="flex flex-col gap-2">
+          <textarea
+            rows={3}
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder={msg.reply_body ? "Ek yanıt yaz…" : "Müşteriye yanıt yaz — e-posta ile gönderilir…"}
+            className="w-full resize-none rounded-xl border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-gold"
+          />
+          {err && <p className="text-xs text-red-600">{err}</p>}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={submitReply}
+              disabled={pending || !reply.trim()}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gold px-3 py-1.5 text-xs font-semibold text-cream transition-colors hover:bg-gold-deep disabled:opacity-60"
+            >
+              <Send className="size-3.5" />
+              {pending ? "Gönderiliyor…" : "Yanıtla ve gönder"}
+            </button>
+            <button
+              type="button"
+              onClick={close}
+              disabled={pending}
+              className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-60"
+            >
+              <CheckCircle2 className="size-3.5" />
+              Kapat
+            </button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
 
 export function SupportInbox({ messages }: { messages: SupportMessage[] }) {
-  const router = useRouter();
-  const open = messages.filter((m) => m.status === "open");
-  const closed = messages.filter((m) => m.status !== "open");
+  const active = messages.filter((m) => m.status !== "closed");
+  const closed = messages.filter((m) => m.status === "closed");
 
   return (
     <div className="flex flex-col gap-6">
       <p className="text-sm text-muted-foreground">
-        İletişim formundan gelen mesajlar. Yanıtı e-posta/telefonla verin, sonra
-        kaydı kapatın.
+        İletişim formundan gelen mesajlar. Panelden yanıtlayın (müşteriye e-posta gider),
+        sonra kaydı kapatın.
       </p>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-semibold text-foreground">
-          Açık talepler ({open.length})
-        </h2>
-        {open.length === 0 && (
+        <h2 className="text-sm font-semibold text-foreground">Açık talepler ({active.length})</h2>
+        {active.length === 0 && (
           <Card className="items-center p-10 text-center text-sm text-muted-foreground">
             Bekleyen destek talebi yok.
           </Card>
         )}
-        {open.map((m) => (
-          <MessageCard key={m.id} msg={m} onClosed={() => router.refresh()} />
+        {active.map((m) => (
+          <MessageCard key={m.id} msg={m} />
         ))}
       </section>
 
       {closed.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-semibold text-muted-foreground">
-            Kapatılanlar ({closed.length})
-          </h2>
+          <h2 className="text-sm font-semibold text-muted-foreground">Kapatılanlar ({closed.length})</h2>
           {closed.map((m) => (
-            <MessageCard key={m.id} msg={m} onClosed={() => router.refresh()} />
+            <MessageCard key={m.id} msg={m} />
           ))}
         </section>
       )}

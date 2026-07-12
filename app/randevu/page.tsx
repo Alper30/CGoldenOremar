@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { submitBooking } from "./actions";
 import {
   CalendarIcon,
   ClockIcon,
@@ -53,6 +54,8 @@ export default function BookingPage() {
   const [form, setForm] = useState<Form>(empty);
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => {
     setForm((f) => ({ ...f, [k]: v }));
@@ -79,9 +82,24 @@ export default function BookingPage() {
     return Object.keys(e).length === 0;
   };
 
-  const onSubmit = (ev: React.FormEvent) => {
+  const onSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (validate()) setDone(true);
+    setSubmitError(null);
+    if (!validate()) return;
+    setBusy(true);
+    const res = await submitBooking({
+      experienceType: form.experienceType,
+      guests: form.numberOfGuests,
+      date: form.bookingDate,
+      time: form.bookingTime,
+      name: form.name.trim(),
+      email: form.email.trim(),
+      phone: form.phone.replace(/\s/g, ""),
+      notes: form.notes.trim() || undefined,
+    });
+    setBusy(false);
+    if ("error" in res) setSubmitError(res.error);
+    else setDone(true);
   };
 
   if (done) {
@@ -103,6 +121,7 @@ export default function BookingPage() {
             onClick={() => {
               setForm(empty);
               setDone(false);
+              setSubmitError(null);
             }}
             className="rounded-full border border-line bg-card px-6 py-3 text-sm font-semibold text-forest transition-colors hover:border-forest/40"
           >
@@ -268,11 +287,17 @@ export default function BookingPage() {
           </div>
 
           <div className="border-t border-line pt-6">
+            {submitError && (
+              <p className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {submitError}
+              </p>
+            )}
             <button
               type="submit"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep sm:w-auto sm:px-10"
+              disabled={busy}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-4 text-sm font-semibold text-cream transition-colors hover:bg-gold-deep disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-10"
             >
-              Randevu Oluştur
+              {busy ? "Gönderiliyor…" : "Randevu Oluştur"}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
