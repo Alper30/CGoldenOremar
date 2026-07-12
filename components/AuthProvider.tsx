@@ -45,20 +45,27 @@ export function AuthProvider({
     // için SIGNED_IN olayında profiles tablosunu yeniden çekeriz.
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null;
       setUserId(u?.id ?? null);
       setEmail(u?.email ?? null);
-      if (u) {
+      if (!u) {
+        setProfile(null);
+        return;
+      }
+      // KRİTİK: auth-js bu callback'i AUTH KİLİDİ TUTULURKEN çalıştırır. Callback
+      // içinde await'li bir Supabase sorgusu (aynı kilide muhtaç) DEADLOCK yaratır:
+      // kilit hiç serbest kalmaz → sonraki tüm .rpc()/.from() (ör. checkout
+      // create_order) HTTP isteği göndermeden sonsuza dek asılır. Bu yüzden profil
+      // çekimini callback DIŞINA (setTimeout 0) erteliyoruz → kilit önce serbest kalır.
+      setTimeout(async () => {
         const { data } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", u.id)
           .single();
         setProfile(data ?? null);
-      } else {
-        setProfile(null);
-      }
+      }, 0);
     });
 
     return () => subscription.unsubscribe();
