@@ -52,6 +52,22 @@ export function OrderReturnHandler({
     })();
   }, [paid, failed, paymentIntent, orderId, router]);
 
+  // Webhook confirm'den birkaç saniye sonra gelebilir (3DS/async ödeme). Hâlâ
+  // "doğrulanıyor" durumundaysak sınırlı sayıda otomatik tazele → kullanıcı elle
+  // yenilemeden 'paid'e geçişi görür. En fazla ~6 deneme (18sn), sonra durur.
+  useEffect(() => {
+    if (paid || failed || !paymentIntent) return;
+    let tries = 0;
+    const id = setInterval(() => {
+      if (++tries > 6) {
+        clearInterval(id);
+        return;
+      }
+      router.refresh();
+    }, 3000);
+    return () => clearInterval(id);
+  }, [paid, failed, paymentIntent, router]);
+
   if (paid) return <OrderSuccessBanner orderId={orderId} />;
 
   if (failed) {

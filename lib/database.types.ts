@@ -318,6 +318,35 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_webhook_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          order_id: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          order_id?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          order_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_webhook_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payouts: {
         Row: {
           amount: number
@@ -441,6 +470,7 @@ export type Database = {
           cold_chain: boolean
           created_at: string
           description: string | null
+          features: string[]
           gallery: string[]
           id: string
           image: string | null
@@ -454,7 +484,6 @@ export type Database = {
           status: string
           stock: number | null
           story: string | null
-          features: string[]
           tags: string[]
           unit: string
           vendor_id: string
@@ -465,6 +494,7 @@ export type Database = {
           cold_chain?: boolean
           created_at?: string
           description?: string | null
+          features?: string[]
           gallery?: string[]
           id?: string
           image?: string | null
@@ -478,7 +508,6 @@ export type Database = {
           status?: string
           stock?: number | null
           story?: string | null
-          features?: string[]
           tags?: string[]
           unit: string
           vendor_id: string
@@ -489,6 +518,7 @@ export type Database = {
           cold_chain?: boolean
           created_at?: string
           description?: string | null
+          features?: string[]
           gallery?: string[]
           id?: string
           image?: string | null
@@ -502,7 +532,6 @@ export type Database = {
           status?: string
           stock?: number | null
           story?: string | null
-          features?: string[]
           tags?: string[]
           unit?: string
           vendor_id?: string
@@ -854,6 +883,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      mark_order_failed: {
+        Args: { p_order_id: string; p_ref: string }
+        Returns: undefined
+      }
       mark_order_paid: {
         Args: {
           p_order_id: string
@@ -874,6 +907,7 @@ export type Database = {
       }
       my_review: { Args: { p_product_slug: string }; Returns: Json }
       open_dispute: { Args: { p_order_vendor_id: string }; Returns: undefined }
+      refund_order: { Args: { p_ref: string }; Returns: undefined }
       reject_vendor_application: {
         Args: { p_app_id: string; p_reason: string }
         Returns: undefined
