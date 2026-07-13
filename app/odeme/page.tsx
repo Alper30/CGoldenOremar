@@ -16,6 +16,7 @@ import { useCatalog } from "@/components/CatalogProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { fmtPrice } from "@/lib/data";
+import { TR_PROVINCE_NAMES, districtsOf, DIAL_CODES } from "@/lib/tr-geo";
 import { ArrowRightIcon, ShieldIcon, CartIcon } from "@/components/icons";
 
 const pubKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -83,6 +84,7 @@ function CheckoutInner({
   const [totals, setTotals] = useState<Totals | null>(null);
   const [form, setForm] = useState({
     name: profile?.full_name ?? "",
+    dialCode: "+90",
     phone: profile?.phone ?? "",
     line: "",
     district: "",
@@ -124,7 +126,8 @@ function CheckoutInner({
         p_items: items,
         p_ship: {
           name: form.name,
-          phone: form.phone,
+          // Ülke kodu + numara birlikte kaydedilir (ör. "+90 5xx...").
+          phone: `${form.dialCode} ${form.phone}`.trim(),
           line: form.line,
           district: form.district,
           province: form.province,
@@ -204,12 +207,40 @@ function CheckoutInner({
               </h2>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <Field label={t("coName")} value={form.name} onChange={upd("name")} required />
-                <Field label={t("coPhone")} value={form.phone} onChange={upd("phone")} required />
+                <PhoneField
+                  label={t("coPhone")}
+                  dialCode={form.dialCode}
+                  phone={form.phone}
+                  onDial={upd("dialCode")}
+                  onPhone={upd("phone")}
+                />
+                <Select
+                  label={t("coProvince")}
+                  value={form.province}
+                  placeholder={t("coSelectProvince")}
+                  options={TR_PROVINCE_NAMES}
+                  // İl değişince ilçeyi sıfırla (ilçe listesi ile bağlı).
+                  onChange={(v) => setForm((f) => ({ ...f, province: v, district: "" }))}
+                  required
+                />
+                <Select
+                  label={t("coDistrict")}
+                  value={form.district}
+                  placeholder={form.province ? t("coSelectDistrict") : t("coSelectProvinceFirst")}
+                  options={districtsOf(form.province)}
+                  onChange={upd("district")}
+                  disabled={!form.province}
+                  required
+                />
                 <div className="sm:col-span-2">
-                  <Field label={t("coAddress")} value={form.line} onChange={upd("line")} required />
+                  <Field
+                    label={t("coAddress")}
+                    value={form.line}
+                    onChange={upd("line")}
+                    placeholder={t("coAddressPh")}
+                    required
+                  />
                 </div>
-                <Field label={t("coDistrict")} value={form.district} onChange={upd("district")} required />
-                <Field label={t("coProvince")} value={form.province} onChange={upd("province")} required />
               </div>
               <button
                 type="submit"
@@ -368,11 +399,13 @@ function Field({
   value,
   onChange,
   required,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   required?: boolean;
+  placeholder?: string;
 }) {
   return (
     <label className="block">
@@ -381,8 +414,93 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="h-11 w-full rounded-xl border border-line bg-cream px-3.5 text-sm text-ink outline-none focus:border-gold"
+        placeholder={placeholder}
+        className="h-11 w-full rounded-xl border border-line bg-cream px-3.5 text-sm text-ink outline-none placeholder:text-muted/70 focus:border-gold"
       />
+    </label>
+  );
+}
+
+// İl/İlçe bağlı seçim kutusu. Boş değer = placeholder (required ise seçim zorunlu).
+function Select({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  required,
+  disabled,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  placeholder: string;
+  required?: boolean;
+  disabled?: boolean;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-forest-deep">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        disabled={disabled}
+        className="h-11 w-full appearance-none rounded-xl border border-line bg-cream px-3.5 text-sm text-ink outline-none focus:border-gold disabled:opacity-50"
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {options.map((o) => (
+          <option key={o} value={o}>
+            {o}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+// Ülke kodu seçici + numara. Numara yalnız rakam kabul eder (format temizliği).
+function PhoneField({
+  label,
+  dialCode,
+  phone,
+  onDial,
+  onPhone,
+}: {
+  label: string;
+  dialCode: string;
+  phone: string;
+  onDial: (v: string) => void;
+  onPhone: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-forest-deep">{label}</span>
+      <div className="flex gap-2">
+        <select
+          value={dialCode}
+          onChange={(e) => onDial(e.target.value)}
+          aria-label="Ülke kodu"
+          className="h-11 w-24 shrink-0 appearance-none rounded-xl border border-line bg-cream px-2.5 text-sm text-ink outline-none focus:border-gold"
+        >
+          {DIAL_CODES.map((d) => (
+            <option key={d.code} value={d.code}>
+              {d.code} {d.label}
+            </option>
+          ))}
+        </select>
+        <input
+          value={phone}
+          onChange={(e) => onPhone(e.target.value.replace(/[^\d]/g, ""))}
+          required
+          inputMode="tel"
+          placeholder="5xx xxx xx xx"
+          className="h-11 w-full rounded-xl border border-line bg-cream px-3.5 text-sm text-ink outline-none placeholder:text-muted/70 focus:border-gold"
+        />
+      </div>
     </label>
   );
 }
